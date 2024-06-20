@@ -19,29 +19,6 @@
         <el-form-item label="角色级别" prop="level">
           <el-input-number v-model.number="form.level" :min="1" controls-position="right" style="width: 145px;" />
         </el-form-item>
-<!--        <el-form-item label="数据范围" prop="dataScope">
-          <el-select v-model="form.dataScope" style="width: 140px" placeholder="请选择数据范围" @change="changeScope">
-            <el-option
-              v-for="item in dateScopes"
-              :key="item"
-              :label="item"
-              :value="item"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="form.dataScope === '自定义'" label="数据权限" prop="depts">
-          <treeselect
-            v-model="deptDatas"
-            :load-options="loadDepts"
-            :options="depts"
-            :flat="true"
-            :auto-select-descendants="true"
-            :default-expand-level="1"
-            multiple
-            style="width: 380px"
-            placeholder="请选择"
-          />
-        </el-form-item>-->
         <el-form-item label="描述信息" prop="description">
           <el-input v-model="form.description" style="width: 380px;" rows="5" type="textarea" />
         </el-form-item>
@@ -61,7 +38,6 @@
           <el-table ref="table" v-loading="crud.loading" highlight-current-row style="width: 100%;" :data="crud.data" @selection-change="crud.selectionChangeHandler" @current-change="handleCurrentChange">
             <el-table-column :selectable="checkboxT" type="selection" width="55" />
             <el-table-column prop="name" label="名称" />
-<!--            <el-table-column prop="dataScope" label="数据权限" />-->
             <el-table-column prop="level" label="角色级别" />
             <el-table-column :show-overflow-tooltip="true" prop="description" label="描述" />
             <el-table-column :show-overflow-tooltip="true" width="135px" prop="createTime" label="创建日期" />
@@ -173,7 +149,6 @@ export default {
     getMenuDatas(node, resolve) {
       setTimeout(() => {
         getMenusTree(node.data.id ? node.data.id : 0).then(res => {
-          // console.log(JSON.stringify(res))
           resolve(res.content)
         })
       }, 100)
@@ -183,19 +158,10 @@ export default {
     },
     // 新增前初始化部门信息
     [CRUD.HOOK.beforeToAdd](crud, form) {
-      // this.deptDatas = []
       form.menus = null
     },
     // 编辑前初始化自定义数据权限的部门信息
     [CRUD.HOOK.beforeToEdit](crud, form) {
-      // this.deptDatas = []
-      // if (form.dataScope === '自定义') {
-      //   this.getSupDepts(form.depts)
-      // }
-      // const _this = this
-      // form.depts.forEach(function(dept) {
-      //   _this.deptDatas.push(dept.id)
-      // })
       // 将角色的菜单清空，避免日志入库数据过长
       form.menus = null
     },
@@ -228,6 +194,7 @@ export default {
             }
           }
         } else {
+          this.menuIds.push(menu.pid)
           for (let i = 0; i < childIds.length; i++) {
             const index = this.menuIds.indexOf(childIds[i])
             if (index === -1) {
@@ -242,6 +209,11 @@ export default {
     saveMenu() {
       this.menuLoading = true
       const role = { id: this.currentId, menus: [] }
+      // // 得到半选的父节点数据，保存起来
+      // this.$refs.menu.getHalfCheckedNodes().forEach(function (data, index) {
+      //   const menu = {id: data.id}
+      //   role.menus.push(menu)
+      // })
       // 得到已选中的 key 值
       this.menuIds.forEach(function(id) {
         const menu = { id: id }

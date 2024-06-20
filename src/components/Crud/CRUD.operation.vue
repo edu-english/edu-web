@@ -22,7 +22,7 @@
         type="success"
         icon="el-icon-edit"
         :disabled="crud.selections.length !== 1"
-        @click="crud.toEdit(crud.selections[0],true)"
+        @click="crud.toEdit(crud.selections[0])"
       >
         修改
       </el-button>

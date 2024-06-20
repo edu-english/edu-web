@@ -2,87 +2,61 @@
   <div class="app-container">
     <!--工具栏-->
     <div class="head-container">
-      <div v-if="crud.props.searchToggle">
-        <!-- 搜索 -->
-        <el-input
-          v-model="query.blurry"
-          clearable
-          size="small"
-          placeholder="输入名称或者邮箱搜索"
-          style="width: 200px;"
-          class="filter-item"
-          @keyup.enter.native="crud.toQuery"
-        />
-        <date-range-picker v-model="query.createTime" class="date-item"/>
-        <rrOperation/>
-      </div>
-      <crudOperation show="" :permission="permission"></crudOperation>
+      <!--      <div v-if="crud.props.searchToggle">-->
+      <!--        &lt;!&ndash; 搜索 &ndash;&gt;-->
+      <!--        <el-input-->
+      <!--          v-model="query.blurry"-->
+      <!--          clearable-->
+      <!--          size="small"-->
+      <!--          placeholder="输入名称或者邮箱搜索"-->
+      <!--          style="width: 200px;"-->
+      <!--          class="filter-item"-->
+      <!--          @keyup.enter.native="crud.toQuery"-->
+      <!--        />-->
+      <!--        <date-range-picker v-model="query.createTime" class="date-item"/>-->
+      <!--        <rrOperation/>-->
+      <!--      </div>-->
+      <crudOperation :permission="permission"></crudOperation>
     </div>
     <!--表单渲染-->
-    <el-dialog class="device-dialog" append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU"
-               :visible.sync="crud.status.cu > 0" :title="crud.status.title">
-      <el-form ref="form" :model="form" size="small" label-position="left" label-width="90px">
-        <el-form-item label="单词短语" prop="wordPhrase">
-          <el-input v-model="form.wordPhrase"/>
+    <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU"
+               :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="520px">
+      <el-form class="dialog-form" ref="form" :model="form" size="small" label-position="left" label-width="100px">
+        <el-form-item label="学生类型" prop="eduLevel">
+          <el-select v-model="form.eduLevel" placeholder="请选择">
+            <el-option
+              v-for="item in eduLevelList"
+              :key="item"
+              :label="item"
+              :value="item"/>
+          </el-select>
         </el-form-item>
-        <el-form-item label="视频资料" prop="VideoVocabularyResource">
-          <el-upload
-            class="upload-demo"
-            :url="videoUrl"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            multiple
-            :limit="1"
-            :on-exceed="handleExceed">
-            <a>请上传文件</a>
-            <!--            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
-          </el-upload>
+        <el-form-item label="试卷名称" prop="examinationName">
+          <el-input v-model="form.examinationName"/>
         </el-form-item>
-        <el-form-item label="男音频资料" prop="manVocabularyResource">
-          <el-upload
-            class="upload-demo"
-            :url="manUrl"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            multiple
-            :limit="1"
-            :on-exceed="handleExceed">
-            <a>请上传文件</a>
-            <!--            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
-          </el-upload>
+        <el-form-item label="试卷类型" prop="examinationType">
+          <el-input v-model="form.examinationType"/>
         </el-form-item>
-        <el-form-item label="女音频资料" prop="womanVocabularyResource">
-          <el-upload
-            class="upload-demo"
-            :url="womanUrl"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            multiple
-            :limit="1"
-            :on-exceed="handleExceed">
-            <a>请上传文件</a>
-            <!--            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
-          </el-upload>
+        <el-form-item label="听力题数量" prop="listenCount">
+          <el-input v-model="form.listenCount" type="number"/>
         </el-form-item>
-        <el-form-item label="童音频资料" prop="childVocabularyResource">
-          <el-upload
-            class="upload-demo"
-            :url="childUrl"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            multiple
-            :limit="1"
-            :on-exceed="handleExceed">
-            <a>请上传文件</a>
-            <!--            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
-          </el-upload>
+        <el-form-item label="选择题题数量" prop="chooseCount">
+          <el-input v-model="form.chooseCount" type="number"/>
         </el-form-item>
-        <el-form-item label="中文释义" prop="chineseMean">
-          <el-input v-model="form.description" rows="5" type="textarea" class="input-textarea"/>
+        <el-form-item label="填空题数量" prop="completionCount">
+          <el-input v-model="form.completionCount" type="number"/>
+        </el-form-item>
+        <el-form-item label="判断题数量" prop="judgeCount">
+          <el-input v-model="form.judgeCount" type="number"/>
+        </el-form-item>
+        <el-form-item label="阅读理解数量" prop="comprehensionCount">
+          <el-input v-model="form.comprehensionCount" type="number"/>
+        </el-form-item>
+        <el-form-item label="作文数量" prop="compositionCount">
+          <el-input v-model="form.compositionCount" type="number"/>
+        </el-form-item>
+        <el-form-item label="难度" prop="difficultyLevel">
+          <el-input v-model="form.difficultyLevel" type="number"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -95,25 +69,37 @@
     <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%;"
               @selection-change="crud.selectionChangeHandler">
       <el-table-column type="selection" width="55"/>
-      <el-table-column :show-overflow-tooltip="true" prop="wordPhrase" label="单词短语"/>
-      <el-table-column :show-overflow-tooltip="true" prop="chineseMean" label="中文释义"/>
-      <el-table-column :show-overflow-tooltip="true" prop="videoResource.vocabularyResource" label="视频资料"/>
-      <el-table-column :show-overflow-tooltip="true" prop="manVoiceResource.vocabularyResource" label="男音频资料"/>
-      <el-table-column :show-overflow-tooltip="true" prop="womanVoiceResource.vocabularyResource" label="女音频资料"/>
-      <el-table-column :show-overflow-tooltip="true" prop="childResource.vocabularyResource" label="童音频资料"/>
+      <el-table-column :show-overflow-tooltip="true" prop="eduLevel" label="学生等级"/>
+      <el-table-column :show-overflow-tooltip="true" prop="examinationName" label="试卷名称"/>
+      <el-table-column :show-overflow-tooltip="true" prop="examinationType" label="试卷类型"/>
+      <el-table-column :show-overflow-tooltip="true" prop="listenCount" label="听力题数量"/>
+      <el-table-column :show-overflow-tooltip="true" prop="chooseCount" label="选择题题数量"/>
+      <el-table-column :show-overflow-tooltip="true" prop="completionCount" label="填空题数量"/>
+      <el-table-column :show-overflow-tooltip="true" prop="judgeCount" label="判断题数量"/>
+      <el-table-column :show-overflow-tooltip="true" prop="comprehensionCount" label="阅读理解数量"/>
+      <el-table-column :show-overflow-tooltip="true" prop="compositionCount" label="作文数量"/>
       <el-table-column :show-overflow-tooltip="true" prop="difficultyLevel" label="难度"/>
-      <el-table-column :show-overflow-tooltip="true" prop="phraseDescription " label="描述"/>
       <el-table-column :show-overflow-tooltip="true" prop="createTime" label="创建日期"/>
       <el-table-column
-        v-if="checkPer(['admin','user:edit','user:del'])"
+        v-if="checkPer(['admin','examination:update','examination:delete'])"
         label="操作"
         width="115"
         align="center"
         fixed="right">
         <template slot-scope="scope">
-          <udOperation
-            :data="scope.row"
-            :permission="permission"/>
+          <el-row>
+            <el-col :span="15">
+              <udOperation :data="scope.row" :permission="permission"/>
+            </el-col>
+            <el-col :span="6">
+              <el-button size="mini" type="primary" icon="el-icon-info" @click="openExaminationsDetail(scope.row.id)"></el-button>
+<!--              <el-button size="mini" style="margin-right: 2px" type="text">-->
+<!--                <router-link :to="'/learning/examinations/examinationsDetail/'+scope.row.id+'/null'">-->
+<!--                  详情-->
+<!--                </router-link>-->
+              </el-button>
+            </el-col>
+          </el-row>
         </template>
       </el-table-column>
     </el-table>
@@ -123,7 +109,7 @@
 </template>
 
 <script>
-import crudVocabulary from '@/api/questions/vocabulary'
+import crudExaminations from '@/api/trainSchool/examinations'
 import CRUD, {presenter, header, form, crud} from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
@@ -136,25 +122,26 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 const defaultForm = {
   id: null,
-  wordPhrase: null,
-  chineseMean: null,
-  phraseType: null,
-  difficultyLevel: 0,
-  phraseDescription: null,
-  videoResource: {},
-  manVoiceResource: {},
-  womanVoiceResource: {},
-  childResource: {},
+  eduLevel: null,
+  difficultyLevel: null,
+  examinationName: null,
+  examinationType: null,
+  listenCount: null,
+  chooseCount: null,
+  completionCount: null,
+  judgeCount: null,
+  compositionCount: null,
+  comprehensionCount: null,
 }
 export default {
   name: 'examinations',
   components: {Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker},
   cruds() {
     return CRUD({
-      title: '词汇列表',
-      url: 'api/questions/vocabulary',
-      query: {phraseType: 'WORD'},
-      crudMethod: {...crudVocabulary}
+      title: '试卷列表',
+      url: '/api/examinations',
+      // query: {phraseType: 'WORD'},
+      crudMethod: {...crudExaminations}
     })
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
@@ -162,20 +149,27 @@ export default {
     return {
       height: document.documentElement.clientHeight - 180 + 'px;',
       permission: {
-        add: ['admin', 'user:add'],
-        edit: ['admin', 'user:edit'],
-        del: ['admin', 'user:del']
+        add: ['admin', 'examination:add'],
+        edit: ['admin', 'examination:update'],
+        del: ['admin', 'examination:delete']
       },
-      videoUrl:'',
-      manUrl:'',
-      womanUrl:'',
-      childUrl:'',
+      eduLevelList: [
+        "小学",
+        "初中",
+        "高中"
+      ],
+    }
+  },
+  created() {
+    this.crud.optShow = {
+      add: true,
+      edit: false,
+      del: true,
+      download: false
     }
   },
   computed: {
-    ...mapGetters([
-
-    ])
+    ...mapGetters([])
   },
   mounted: function () {
     const that = this
@@ -190,26 +184,27 @@ export default {
         e.returnValue = false
       }
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
+    openExaminationsDetail(id) {
+      this.$router.push({
+        name:'examinationsDetail',
+        params: {
+          id: id,
+          stuId: null
+        }
+      })
     }
   }
 }
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-.device-dialog {
-  padding: 0 10px;
-  width: 600px;
+.dialog-form {
+  margin: 0 2vh;
+
+  .el-select {
+    width: 53vh;
+  }
+
   a {
     text-decoration: underline; /* 添加下划线 */
     font-size: 14px;
@@ -217,12 +212,12 @@ export default {
     letter-spacing: 0;
     font-weight: 400;
   }
-  .input-textarea{
+
+  .input-textarea {
     background: #F2F2F2;
     border-radius: 4px;
   }
 }
-
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>

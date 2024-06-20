@@ -146,7 +146,6 @@
           <template slot-scope="scope">
             <el-switch
               v-model="scope.row.enabled"
-              :disabled="user.userId === scope.row.id"
               active-color="#409EFF"
               inactive-color="#F56C6C"
               @change="changeEnabled(scope.row, scope.row.enabled)"
@@ -165,8 +164,6 @@
             <udOperation
               :data="scope.row"
               :permission="permission"
-              :disabled-dle="scope.row.id === user.userId"
-              :disabled-edit="scope.row.id === user.userId"
             />
           </template>
         </el-table-column>

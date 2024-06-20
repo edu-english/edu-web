@@ -20,7 +20,7 @@ var option = {
       fontWeight: 400,
     },
     left: '3%',
-    bottom: '96%',
+    bottom: '93%',
 
   },
   //图标位置
@@ -136,7 +136,7 @@ var option = {
       type: 'bar',
       yAxisIndex: 1,
       barGap: '-100%',
-      data: [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000],
+      data: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
       barWidth: 10,
       itemStyle: {
         normal: {
@@ -160,9 +160,9 @@ function chart_1(resContent) {
     (function (i) {
       content = resContent[i]
       // console.log("content====" + JSON.stringify(content) + "==="+i+myColor[i])
-      option.yAxis[0].data.push(content.title);
-      option.yAxis[1].data.push(content.total);
-      option.series[0].data.push(content.total);
+      option.yAxis[0].data.push(content.wordPhrase);
+      option.yAxis[1].data.push(content.num);
+      option.series[0].data.push(content.num);
       myChart1.setOption(option);
     })(i);
   }
@@ -177,9 +177,9 @@ function chart_2(resContent) {
   for (let i = 0; i < resContent.length; ++i) {
     (function (i) {
       content = resContent[i]
-      option.yAxis[0].data.push(content.title);
-      option.yAxis[1].data.push(content.total);
-      option.series[0].data.push(content.total);
+      option.yAxis[0].data.push(content.wordPhrase);
+      option.yAxis[1].data.push(content.num);
+      option.series[0].data.push(content.num);
       myChart2.setOption(option);
     })(i);
   }
@@ -195,17 +195,24 @@ function chart_3(resContent) {
     (function (i) {
       content = resContent[i]
       // console.log("content====" + JSON.stringify(content) + "==="+i+myColor[i])
-      option.yAxis[0].data.push(content.title);
-      option.yAxis[1].data.push(content.total);
-      option.series[0].data.push(content.total);
+      option.yAxis[0].data.push(content.wordPhrase);
+      option.yAxis[1].data.push(content.num);
+      option.series[0].data.push(content.num);
       myChart3.setOption(option);
     })(i);
   }
 }
 
+export function getDataRead() {
+  return request({
+    url: '/api/data/read',
+    method: 'get',
+  })
+}
 
 export default {
   chart_1,
   chart_2,
-  chart_3
+  chart_3,
+  getDataRead
 }

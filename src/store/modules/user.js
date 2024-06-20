@@ -53,8 +53,17 @@ const user = {
     GetInfo({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(res => {
-          setUserInfo(res, commit)
-          resolve(res)
+          if (res.code==="0000"){
+            res=res.content
+            setUserInfo(res, commit)
+            resolve(res)
+          }else {
+            this.$notify({
+              title: '获取用户信息失败',
+              type: 'error',
+              duration: 1500
+            })
+          }
         }).catch(error => {
           reject(error)
         })

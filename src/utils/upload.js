@@ -28,23 +28,38 @@ const headers = {
   'x-oss-forbid-overwrite': 'false',
 };
 
+let credentials = null;
+
 export async function ossPut(file, pathPrefix) {
-  const token = await request({url: 'api/aliyun/oss', method: 'get'}).then((token) => {
-    return token
-  })
+  if (isCredentialsExpired(credentials)) {
+    credentials = await request({url: 'api/aliyun/oss', method: 'get'}).then((token) => {
+      console.log("请求token==" + JSON.stringify(token.content))
+      return token.content
+    })
+  }
+
   const client = new OSS({
-    region: token.content.domain,
-    accessKeyId: token.content.accessKeyId,
-    accessKeySecret: token.content.accessKeySecret,
-    stsToken: token.content.securityToken,
-    refreshSTSTokenInterval: token.content.expiration,// 刷新临时访问凭证的时间间隔，单位为毫秒。
-    bucket: token.content.bucket, //bucket名字
-    secure: true
+    region: credentials.domain,
+    accessKeyId: credentials.accessKeyId,
+    accessKeySecret: credentials.accessKeySecret,
+    stsToken: credentials.securityToken,
+    bucket: credentials.bucket, //bucket名字
+    secure: true,
+
   });
-  const fileName = pathPrefix + "/" + uuidv4().replace(/-/g, '')
-  return client.put(fileName, file.file, {headers}).then(res => {
+  const name = file.file.name
+  const fileName = pathPrefix + "/" + uuidv4().replace(/-/g, '') + name.substring(name.lastIndexOf('.'))
+  return client.put(fileName, file.file,
+    {
+      timeout: 3600000,// 超时时间
+      headers: {
+        headers
+      },
+    }).then(res => {
+    // console.log(res, 'res---header ');
     return {
       'val': fileName,
+      'name':name
     }
   }).catch(err => {
     console.error(err)
@@ -73,4 +88,18 @@ export async function ossRemove(fileName) {
   } catch (error) {
     console.log(error);
   }
+}
+
+
+/**
+ * 判断临时凭证是否到期。
+ **/
+function isCredentialsExpired(credentials) {
+  if (!credentials) {
+    return true;
+  }
+  const expireDate = new Date(credentials.expiration);
+  const now = new Date();
+  // 如果有效期不足一分钟，视为过期。
+  return expireDate.getTime() - now.getTime() <= 60000;
 }

@@ -3,23 +3,23 @@
     <el-row :gutter="23">
       <el-col :xs="24" :sm="24" :lg="8">
         <div class="card-panel-title">
-          <span>{{ this.title1[0].title }}</span>
-          <el-button
-            class="filter-item"
-            size="mini"
-            type="primary"
-            icon="el-icon-search"
-            v-if="showStatistics"
-            @click="getCount()">查询
-          </el-button>
+          <span>{{ this.title1.eduLevel }}</span>
+<!--          <el-button-->
+<!--            class="filter-item"-->
+<!--            size="mini"-->
+<!--            type="primary"-->
+<!--            icon="el-icon-search"-->
+<!--            v-if="showStatistics"-->
+<!--            @click="getCount()">查询-->
+<!--          </el-button>-->
         </div>
-        <div class="card-col" v-for="item in title1">
-          <div class="card-title">
-            <span>{{ item.childTitle }}</span>
-            <el-divider direction="vertical"/>
-            {{ item.learnCount }}
-            <span style="color: #8A9495">人参加学习</span>
-          </div>
+        <div class="card-col">
+<!--          <div class="card-title">-->
+<!--            <span>{{ item.childTitle }}</span>-->
+<!--            <el-divider direction="vertical"/>-->
+<!--            {{ item.learnCount }}-->
+<!--            <span style="color: #8A9495">人参加学习</span>-->
+<!--          </div>-->
           <div class="card-bar">
             <div class="center-div">
               <span>级别测试数据</span>
@@ -27,17 +27,17 @@
                 <el-col :span="8">
                   最高分
                   <br/>
-                  <span>{{ item.max }}</span>
+                  <span>{{ title1.maxScore }}</span>
                 </el-col>
                 <el-col :span="8">
                   平均分
                   <br/>
-                  <span>{{ item.avg }}</span>
+                  <span>{{ title1.avgScore }}</span>
                 </el-col>
                 <el-col :span="8">
                   最低分
                   <br/>
-                  <span>{{ item.min }}</span>
+                  <span>{{ title1.minScore }}</span>
                 </el-col>
               </el-row>
             </div>
@@ -47,22 +47,22 @@
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8" v-if="showStatistics">
         <div class="card-panel-title">
-          <span>{{ this.title2[0].title }}</span>
-          <el-button
-            class="filter-item"
-            size="mini"
-            type="primary"
-            icon="el-icon-search"
-            @click="getCount()">查询
-          </el-button>
+          <span>{{ this.title2.eduLevel }}</span>
+<!--          <el-button-->
+<!--            class="filter-item"-->
+<!--            size="mini"-->
+<!--            type="primary"-->
+<!--            icon="el-icon-search"-->
+<!--            @click="getCount()">查询-->
+<!--          </el-button>-->
         </div>
-        <div class="card-col" v-for="item in title2">
-          <div class="card-title">
-            <span>{{ item.childTitle }}</span>
-            <el-divider direction="vertical"/>
-            {{ item.learnCount }}
-            <span style="color: #8A9495">人参加学习</span>
-          </div>
+        <div class="card-col">
+<!--          <div class="card-title">-->
+<!--            <span>{{ item.childTitle }}</span>-->
+<!--            <el-divider direction="vertical"/>-->
+<!--            {{ item.learnCount }}-->
+<!--            <span style="color: #8A9495">人参加学习</span>-->
+<!--          </div>-->
           <div class="card-bar">
             <div class="center-div">
               <span>级别测试数据</span>
@@ -70,17 +70,17 @@
                 <el-col :span="8">
                   最高分
                   <br/>
-                  <span>{{ item.max }}</span>
+                  <span>{{ title2.maxScore }}</span>
                 </el-col>
                 <el-col :span="8">
                   平均分
                   <br/>
-                  <span>{{ item.avg }}</span>
+                  <span>{{ title2.avgScore }}</span>
                 </el-col>
                 <el-col :span="8">
                   最低分
                   <br/>
-                  <span>{{ item.min }}</span>
+                  <span>{{ title2.minScore }}</span>
                 </el-col>
               </el-row>
             </div>
@@ -89,22 +89,22 @@
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8" v-if="showStatistics">
         <div class="card-panel-title">
-          <span>{{ this.title3[0].title }}</span>
-          <el-button
-            class="filter-item"
-            size="mini"
-            type="primary"
-            icon="el-icon-search"
-            @click="getCount()">查询
-          </el-button>
+          <span>{{ this.title3.eduLevel }}</span>
+<!--          <el-button-->
+<!--            class="filter-item"-->
+<!--            size="mini"-->
+<!--            type="primary"-->
+<!--            icon="el-icon-search"-->
+<!--            @click="getCount()">查询-->
+<!--          </el-button>-->
         </div>
-        <div class="card-col" v-for="item in title3">
-          <div class="card-title">
-            <span>{{ item.childTitle }}</span>
-            <el-divider direction="vertical"/>
-            {{ item.learnCount }}
-            <span style="color: #8A9495">人参加学习</span>
-          </div>
+        <div class="card-col">
+<!--          <div class="card-title">-->
+<!--            <span>{{ item.childTitle }}</span>-->
+<!--            <el-divider direction="vertical"/>-->
+<!--            {{ item.learnCount }}-->
+<!--            <span style="color: #8A9495">人参加学习</span>-->
+<!--          </div>-->
           <div class="card-bar">
             <div class="center-div">
               <span>级别测试数据</span>
@@ -112,17 +112,17 @@
                 <el-col :span="8">
                   最高分
                   <br/>
-                  <span>{{ item.max }}</span>
+                  <span>{{ title2.maxScore }}</span>
                 </el-col>
                 <el-col :span="8">
                   平均分
                   <br/>
-                  <span>{{ item.avg }}</span>
+                  <span>{{ title2.avgScore }}</span>
                 </el-col>
                 <el-col :span="8">
                   最低分
                   <br/>
-                  <span>{{ item.min }}</span>
+                  <span>{{ title2.minScore }}</span>
                 </el-col>
               </el-row>
             </div>
@@ -149,72 +149,24 @@ export default {
   inject: ['reload'],
   data() {
     return {
-      title1: [
-        {
-          "title": "小学",
-          "childTitle": "杭州第一小学 · 三年级1班",
-          "learnCount": 10,
-          "totalTime": 5132,
-          "userNum": 5,
-          "max": 99,
-          "avg": 80,
-          "min": 75
+      title1:  {
+          "minScore": 0,
+          "avgScore": 0,
+          "eduLevel": "小学",
+          "maxScore": 0
         },
-        {
-          "title": "小学",
-          "childTitle": "杭州第一小学 · 三年级2班",
-          "learnCount": 10,
-          "totalTime": 5132,
-          "userNum": 5,
-          "max": 99,
-          "avg": 80,
-          "min": 75
-        }
-      ],
-      title2: [
-        {
-          "title": "初中",
-          "childTitle": "杭州第一初中 · 三年级1班",
-          "learnCount": 20,
-          "totalTime": 5132,
-          "userNum": 5,
-          "max": 99,
-          "avg": 80,
-          "min": 75
+      title2:  {
+          "minScore": 0,
+          "avgScore": 0,
+          "eduLevel": "初中",
+          "maxScore": 0
         },
-        {
-          "title": "初中",
-          "childTitle": "杭州第一初中 · 三年级2班",
-          "learnCount": 20,
-          "totalTime": 5132,
-          "userNum": 5,
-          "max": 99,
-          "avg": 80,
-          "min": 75
-        }
-      ],
-      title3: [
-        {
-          "title": "高中",
-          "childTitle": "杭州第一高中 · 三年级1班",
-          "learnCount": 5,
-          "totalTime": 5132,
-          "userNum": 5,
-          "max": 99,
-          "avg": 80,
-          "min": 75
+      title3:  {
+          "minScore": 0,
+          "avgScore": 0,
+          "eduLevel": "高中",
+          "maxScore": 0
         },
-        {
-          "title": "高中",
-          "childTitle": "杭州第一高中 · 三年级2班",
-          "learnCount": 5,
-          "totalTime": 5132,
-          "userNum": 5,
-          "max": 99,
-          "avg": 80,
-          "min": 75
-        }
-      ],
       showStatistics: true,
       loading: false,
     }
@@ -224,6 +176,19 @@ export default {
   },
   methods: {
     init() {
+      LevelTest.getDataTest().then(res => {
+        if (res.content !== null) {
+          if (res.content.xiaoxue !== undefined) {
+            this.title1=res.content.xiaoxue
+          }
+          if (res.content.chuzhong !== undefined) {
+            this.title2=res.content.chuzhong
+          }
+          if (res.content.gaozhong !== undefined) {
+            this.title3=res.content.gaozhong
+          }
+        }
+      })
     },
     getCount() {
       this.showStatistics = false

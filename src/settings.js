@@ -2,7 +2,7 @@ module.exports = {
   /**
    * @description 网站标题
    */
-  title: '英语精准教学系统管理后台',
+  title: '维龙英语教育系统',
   /**
    * @description 是否显示 tagsView
    */

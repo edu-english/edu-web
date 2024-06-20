@@ -1,44 +1,88 @@
 <template>
   <div class="teach-div">
-    <div v-for="item in contentList" class="teach-content">
-      <div class="card-panel-title">
-        <span>{{ item.className }}</span>
-      </div>
-      <div>
-        <el-row :gutter="23">
-          <el-col :xs="24" :sm="24" :lg="8" v-for="childItem in item.dataList">
-            <div class="child-teach-col-div">
-              <span>{{ childItem.title }}</span>
-              <div class="center-div">
-                <span>{{ childItem.childTitle }}</span>
-                <el-row :gutter="23">
-                  <el-col :lg="8">
-                    <div class="center-div-col-div">
-                      {{ childItem.max }}
-                      <br/>
-                      <span>最高分</span>
-                    </div>
-                  </el-col>
-                  <el-col :lg="8">
-                    <div class="center-div-col-div">
-                      {{ childItem.avg }}
-                      <br/>
-                      <span>平均分</span>
-                    </div>
-                  </el-col>
-                  <el-col :lg="8">
-                    <div class="center-div-col-div">
-                      {{ childItem.min }}
-                      <br/>
-                      <span>最低分</span>
-                    </div>
-                  </el-col>
-                </el-row>
-              </div>
+    <div class="teach-content">
+
+      <el-row :gutter="23">
+        <el-col :xs="24" :sm="24" :lg="8">
+          <div class="card-panel-title" >
+            <span>小学</span>
+          </div>
+          <div class="child-teach-col-div"  v-for="childItem in dataList1">
+            <span>{{ childItem.school }}</span>
+            <div class="center-div">
+              <el-row :gutter="25">
+                <el-col :lg="10">
+                  <div class="center-div-col-div">
+                    {{ childItem.maxScore }}
+                    <br/>
+                    <span>最高分</span>
+                  </div>
+                </el-col>
+                <el-col :lg="10">
+                  <div class="center-div-col-div">
+                    {{ childItem.minScore }}
+                    <br/>
+                    <span>最低分</span>
+                  </div>
+                </el-col>
+              </el-row>
             </div>
-          </el-col>
-        </el-row>
-      </div>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :lg="8">
+          <div class="card-panel-title" >
+            <span>初中</span>
+          </div>
+          <div class="child-teach-col-div"  v-for="childItem in dataList2">
+            <span>{{ childItem.school }}</span>
+            <div class="center-div">
+              <el-row :gutter="25">
+                <el-col :lg="10">
+                  <div class="center-div-col-div">
+                    {{ childItem.maxScore }}
+                    <br/>
+                    <span>最高分</span>
+                  </div>
+                </el-col>
+                <el-col :lg="10">
+                  <div class="center-div-col-div">
+                    {{ childItem.minScore }}
+                    <br/>
+                    <span>最低分</span>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="24" :lg="8">
+          <div class="card-panel-title" >
+            <span>高中</span>
+          </div>
+          <div class="child-teach-col-div"  v-for="childItem in dataList3">
+            <span>{{ childItem.school }}</span>
+            <div class="center-div">
+              <el-row :gutter="25">
+                <el-col :lg="10">
+                  <div class="center-div-col-div">
+                    {{ childItem.maxScore }}
+                    <br/>
+                    <span>最高分</span>
+                  </div>
+                </el-col>
+                <el-col :lg="10">
+                  <div class="center-div-col-div">
+                    {{ childItem.minScore }}
+                    <br/>
+                    <span>最低分</span>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+
     </div>
   </div>
 </template>
@@ -52,62 +96,10 @@ export default {
   inject: ['reload'],
   data() {
     return {
-      contentList: [
-        {
-          "className": "杭州第一小学 · 三年级1班",
-          "dataList": [
-            {
-              "title": "参加校外学习",
-              "childTitle": "校内考试",
-              "max": 99,
-              "avg": 80,
-              "min": 75
-            },
-            {
-              "title": "参加校外学习",
-              "childTitle": "级别测试",
-              "max": 99,
-              "avg": 80,
-              "min": 75
-            }
-            ,
-            {
-              "title": "未参加校外学习",
-              "childTitle": "校内考试",
-              "max": 99,
-              "avg": 80,
-              "min": 75
-            }
-          ]
-        },
-        {
-          "className": "杭州第二小学 · 三年级1班",
-          "dataList": [
-            {
-              "title": "参加校外学习",
-              "childTitle": "校内考试",
-              "max": 99,
-              "avg": 80,
-              "min": 75
-            },
-            {
-              "title": "参加校外学习",
-              "childTitle": "级别测试",
-              "max": 99,
-              "avg": 80,
-              "min": 75
-            }
-            ,
-            {
-              "title": "未参加校外学习",
-              "childTitle": "校内考试",
-              "max": 99,
-              "avg": 80,
-              "min": 75
-            }
-          ]
-        }
-      ],
+      dataInfo: {},
+      dataList1: [],
+      dataList2: [],
+      dataList3: [],
       showStatistics: true,
       loading: false,
     }
@@ -117,6 +109,19 @@ export default {
   },
   methods: {
     init() {
+      TeachQuality.getDataTeachQuality().then(res => {
+        if (res.content !== null) {
+          if (res.content.xiaoxue !== undefined) {
+            this.dataList1=res.content.xiaoxue
+          }
+          if (res.content.chuzhong !== undefined) {
+            this.dataList2=res.content.chuzhong
+          }
+          if (res.content.gaozhong !== undefined) {
+            this.dataList3=res.content.gaozhong
+          }
+        }
+      })
     },
     getCount() {
       this.showStatistics = false
@@ -134,7 +139,9 @@ export default {
   padding: 2vh 2vh 5vh 2vh;
   background-color: rgb(240, 242, 245);
   height: 91vh;
-  .teach-content{
+
+  .teach-content {
+
     height: 45vh;
     .card-panel-title {
       margin-bottom: 2vh;
@@ -147,10 +154,16 @@ export default {
       background: #fff;
     }
 
+    .el-row{
+      padding-top: 10px;
+      padding-bottom: 40px;
+    }
+
     .child-teach-col-div {
       height: 32vh;
       background: #fff;
       padding: 2.5vh 2vh 0 2vh;
+      margin-bottom: 40px;
 
       span {
         font-size: 26px;
@@ -172,6 +185,9 @@ export default {
         .el-row {
           margin-top: 3vh;
 
+          .el-col{
+           margin-left: 2vh;
+          }
           .center-div-col-div {
             font-size: 50px;
             color: #000000;
@@ -194,7 +210,6 @@ export default {
 
     }
   }
-
 
 
 }

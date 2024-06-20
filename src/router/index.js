@@ -66,6 +66,12 @@ export const loadMenus = (next, to) => {
         next({ ...to, replace: true })
       })
       store.dispatch('SetSidebarRouters', sidebarRoutes)
+    }else {
+      this.$notify({
+        title: '菜单加载失败',
+        type: 'error',
+        duration: 1500
+      })
     }
   })
 }

@@ -4,64 +4,64 @@
       <el-col :xs="24" :sm="24" :lg="8">
         <div class="card-panel-title">
           <span>{{ this.title1.title }}</span>
-          <el-button
-            class="filter-item"
-            size="mini"
-            type="primary"
-            icon="el-icon-search"
-            v-if="showStatistics"
-            @click="getCount()">查询
-          </el-button>
+          <!--          <el-button-->
+          <!--            class="filter-item"-->
+          <!--            size="mini"-->
+          <!--            type="primary"-->
+          <!--            icon="el-icon-search"-->
+          <!--            v-if="showStatistics"-->
+          <!--            @click="getCount()">查询-->
+          <!--          </el-button>-->
         </div>
         <div class="chart-col">
-          <div class="chart-title">
-            <span>{{ this.title1.childTitle }}</span>
-            <el-divider direction="vertical"/>
-            {{ this.title1.learnCount }}
-            <span style="color: #8A9495">人参加学习</span>
-          </div>
+          <!--          <div class="chart-title">-->
+          <!--            <span>{{ this.title1.childTitle }}</span>-->
+          <!--            <el-divider direction="vertical"/>-->
+          <!--            {{ this.title1.learnCount }}-->
+          <!--            <span style="color: #8A9495">人参加学习</span>-->
+          <!--          </div>-->
           <div id="chart1" class="chart-bar"/>
         </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8" v-if="showStatistics">
         <div class="card-panel-title">
           <span>{{ this.title2.title }}</span>
-          <el-button
-            class="filter-item"
-            size="mini"
-            type="primary"
-            icon="el-icon-search"
-            @click="getCount()">查询
-          </el-button>
+<!--          <el-button-->
+<!--            class="filter-item"-->
+<!--            size="mini"-->
+<!--            type="primary"-->
+<!--            icon="el-icon-search"-->
+<!--            @click="getCount()">查询-->
+<!--          </el-button>-->
         </div>
         <div class="chart-col">
-          <div class="chart-title">
-            <span>{{ this.title2.childTitle }}</span>
-            <el-divider direction="vertical"/>
-            {{ this.title2.learnCount }}
-            <span style="color: #8A9495">人参加学习</span>
-          </div>
+          <!--          <div class="chart-title">-->
+          <!--            <span>{{ this.title2.childTitle }}</span>-->
+          <!--            <el-divider direction="vertical"/>-->
+          <!--            {{ this.title2.learnCount }}-->
+          <!--            <span style="color: #8A9495">人参加学习</span>-->
+          <!--          </div>-->
           <div id="chart2" class="chart-bar"/>
         </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8" v-if="showStatistics">
         <div class="card-panel-title">
           <span>{{ this.title3.title }}</span>
-          <el-button
-            class="filter-item"
-            size="mini"
-            type="primary"
-            icon="el-icon-search"
-            @click="getCount()">查询
-          </el-button>
+<!--          <el-button-->
+<!--            class="filter-item"-->
+<!--            size="mini"-->
+<!--            type="primary"-->
+<!--            icon="el-icon-search"-->
+<!--            @click="getCount()">查询-->
+<!--          </el-button>-->
         </div>
         <div class="chart-col">
-          <div class="chart-title">
-            <span>{{ this.title3.childTitle }}</span>
-            <el-divider direction="vertical"/>
-            {{ this.title3.learnCount }}
-            <span style="color: #8A9495">人参加学习</span>
-          </div>
+          <!--          <div class="chart-title">-->
+          <!--            <span>{{ this.title3.childTitle }}</span>-->
+          <!--            <el-divider direction="vertical"/>-->
+          <!--            {{ this.title3.learnCount }}-->
+          <!--            <span style="color: #8A9495">人参加学习</span>-->
+          <!--          </div>-->
           <div id="chart3" class="chart-bar"/>
         </div>
       </el-col>
@@ -86,144 +86,15 @@ export default {
     return {
       title1: {
         "title": "小学",
-        "childTitle": "杭州第一小学 · 三年级2班",
-        "learnCount": 10,
-        "resContent": [
-          {
-            "title": "x",
-            "total": 793,
-          },
-          {
-            "title": "z",
-            "total": 600
-          },
-          {
-            "title": "c",
-            "total": 550
-          },
-          {
-            "title": "v",
-            "total": 520
-          },
-          {
-            "title": "b",
-            "total": 406
-          },
-          {
-            "title": "a",
-            "total": 350
-          },
-          {
-            "title": "s",
-            "total": 300
-          },
-          {
-            "title": "d",
-            "total": 260
-          },
-          {
-            "title": "u",
-            "total": 180
-          },
-          {
-            "title": "h",
-            "total": 450
-          }
-        ]
+        "resContent": []
       },
       title2: {
         "title": "初中",
-        "childTitle": "杭州第一初中 · 三年级2班",
-        "learnCount": 20,
-        "resContent": [
-          {
-            "title": "x",
-            "total": 793,
-          },
-          {
-            "title": "z",
-            "total": 600
-          },
-          {
-            "title": "c",
-            "total": 550
-          },
-          {
-            "title": "v",
-            "total": 520
-          },
-          {
-            "title": "b",
-            "total": 406
-          },
-          {
-            "title": "a",
-            "total": 350
-          },
-          {
-            "title": "s",
-            "total": 300
-          },
-          {
-            "title": "d",
-            "total": 260
-          },
-          {
-            "title": "u",
-            "total": 180
-          },
-          {
-            "title": "h",
-            "total": 450
-          }
-        ]
+        "resContent": []
       },
       title3: {
         "title": "高中",
-        "childTitle": "杭州第一高中 · 三年级2班",
-        "learnCount": 5,
-        "resContent": [
-          {
-            "title": "x",
-            "total": 793,
-          },
-          {
-            "title": "z",
-            "total": 600
-          },
-          {
-            "title": "c",
-            "total": 550
-          },
-          {
-            "title": "v",
-            "total": 520
-          },
-          {
-            "title": "b",
-            "total": 406
-          },
-          {
-            "title": "a",
-            "total": 350
-          },
-          {
-            "title": "s",
-            "total": 300
-          },
-          {
-            "title": "d",
-            "total": 260
-          },
-          {
-            "title": "u",
-            "total": 180
-          },
-          {
-            "title": "h",
-            "total": 450
-          }
-        ]
+        "resContent": []
       },
       showStatistics: true,
       loading: false,
@@ -231,15 +102,23 @@ export default {
   },
   mounted() {
     this.init()
-    this.intervalId = setInterval(this.init, 5000 * 600); // 秒 刷新一次
+    // this.intervalId = setInterval(this.init, 5000 * 600); // 秒 刷新一次
   },
   methods: {
     init() {
-      // initdata(params).then(res => {
-      Vocabulary.chart_1(this.title1.resContent)
-      Vocabulary.chart_2(this.title2.resContent)
-      Vocabulary.chart_3(this.title3.resContent)
-      // })
+      Vocabulary.getDataWord().then(res => {
+        if (res.content !== null) {
+          if (res.content.xiaoxue !== undefined) {
+            Vocabulary.chart_1(res.content.xiaoxue)
+          }
+          if (res.content.chuzhong !== undefined) {
+            Vocabulary.chart_2(res.content.chuzhong)
+          }
+          if (res.content.gaozhong !== undefined) {
+            Vocabulary.chart_3(res.content.gaozhong)
+          }
+        }
+      })
     },
     getCount() {
       this.showStatistics = false
@@ -280,23 +159,24 @@ export default {
         font-weight: 400;
       }
     }
+
     .chart-col {
       background: #fff;
       margin-top: 10px;
       padding-top: 15px;
 
-      .chart-title {
-        height: 6vh;
-        width: 400px;
-        margin-left: 9%;
-        margin-bottom: 5%;
-        padding: 4% 7%;
-        border: 2px solid #000000;
-        border-radius: 8px;
-      }
+      //.chart-title {
+      //  height: 6vh;
+      //  width: 400px;
+      //  margin-left: 9%;
+      //  margin-bottom: 5%;
+      //  padding: 4% 7%;
+      //  border: 2px solid #000000;
+      //  border-radius: 8px;
+      //}
 
       .chart-bar {
-        height: 69.2vh;
+        height: 75.2vh;
         padding: 0 20px;
       }
     }

@@ -52,7 +52,7 @@ function CRUD(options) {
       add: true,
       edit: true,
       del: true,
-      download: true,
+      download: false,
       reset: true
     },
     // 自定义一些扩展属性
