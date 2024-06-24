@@ -27,7 +27,7 @@
               <!--              <el-form-item label="模式" class="stu-form-item">-->
               <span style="font-size: 14px;">模式：</span>
               <el-radio v-model="initStudent.studyType" label="TRAINING">学习培训</el-radio>
-              <el-radio v-model="initStudent.studyType" label="EXAMINATION">考试</el-radio>
+              <el-radio v-model="initStudent.studyType" label="EXAMINATION" v-show="showExamination">考试</el-radio>
               <!--              </el-form-item>-->
             </el-col>
             <el-col :xs="24" :sm="24" :lg="6">
@@ -362,8 +362,16 @@ export default {
 .dialog-form {
   margin: 0 2vh;
 
+  .el-input-number {
+    width: 36vh
+  }
+
+  .el-input {
+    width: 36vh
+  }
+
   .el-select {
-    width: 53vh;
+    width: 36vh
   }
 
   a {

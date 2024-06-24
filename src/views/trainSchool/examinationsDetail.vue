@@ -1,8 +1,13 @@
 <template>
   <div class="app-container">
+    <div style="width: 100%; height: 25px; margin-bottom: 10px">
+      <el-page-header @back="backPage" content="试卷详情"/>
+      <hr/>
+    </div>
     <div class="head-content">
       <h3>{{ content.examName }} </h3>
-      <p v-if="content.studentScore!==null">得分：{{ content.studentScore }}</p>
+      <p v-if="content.studentScore!==null">得分：{{ content.studentScore }}
+      </p>
     </div>
     <div class="question-div">
       <ol class="question-ol">
@@ -11,10 +16,11 @@
           <div class="child-question" v-for="(question,index) in examination.questions">
             <div>
               {{ index + 1 }}、{{ question.questionTitle }}
-              <span v-if="question.questionType!=='COMPOSITION'">（分数:{{ question.score }}）（ {{
-                  question.answer
-                }} ）</span>
-              <span class="stu-answer" v-show="showStuAnswer">学生答案（ {{ question.studentAnswer }} ）</span>
+              <span>
+                （{{ question.score }}分）
+                 <span v-if="question.questionType!=='COMPOSITION' && question.questionType!=='COMPREHENSION'">正确答案（ {{ question.answer }} ）</span>
+              </span>
+              <span class="stu-answer" v-show="showStuAnswer && question.questionType!=='COMPOSITION' && question.questionType!=='COMPREHENSION'">学生答案（ {{question.studentAnswer}} ）</span>
             </div>
             <!--题为文件时处理-->
             <div v-if="question.questionTitleFile!==null && question.questionTitleFile!==''" class="question-file-div">
@@ -32,7 +38,7 @@
                   :style="`object-fit: contain;`"
                   :src="question.questionTitleFile"
                   :width="750"
-                  :height="60"
+                  :height="450"
                   :autoplay="videoInfo.autoplay"
                   :controls="videoInfo.controls"
                   :loop="videoInfo.loop"
@@ -65,6 +71,89 @@
                   D、{{ question.optionD }}
                 </el-col>
               </el-row>
+            </div>
+            <!--作文内容-->
+            <div v-show="showStuAnswer && question.questionType==='COMPOSITION'">
+              <p style="border: #8A9495 1px solid; width: 100%; white-space: pre-wrap;">
+                {{ question.studentAnswer }}
+              </p>
+              <div class="operate-button">
+                <el-form ref="form" size="small" label-width="90px" :inline="true">
+                  <el-form-item label="作文分数：">
+<!--                    <el-input v-model="stuScore"></el-input>-->
+                    <el-input-number v-model.number="stuScore" controls-position="right" size="large" :min="1" :max="question.score"/>
+                  </el-form-item>
+                  <el-form-item label="升级：">
+                    <el-radio v-model="hasPass" label="1">通过</el-radio>
+                    <el-radio v-model="hasPass" label="0">不通过</el-radio>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button type="primary" @click="score(question.id,content.batchId)">提交</el-button>
+                  </el-form-item>
+                </el-form>
+
+              </div>
+            </div>
+            <!--阅读理解下小题-->
+            <div class="child-question" v-show="question.questionType==='COMPREHENSION'" v-for="(subQuestion,subIndex) in question.subQuestions">
+              <div>
+                {{ subIndex + 1 }}、{{ subQuestion.questionTitle }}
+                <span>
+                （{{ subQuestion.score }}分）
+                 <span v-if="question.questionType!=='COMPOSITION'">正确答案（ {{ subQuestion.answer }} ）</span>
+              </span>
+                <span class="stu-answer" v-show="showStuAnswer && subQuestion.questionType!=='COMPOSITION'">学生答案（ {{subQuestion.studentAnswer}} ）</span>
+              </div>
+              <!--题为文件时处理-->
+              <div v-if="subQuestion.questionTitleFile!==null && subQuestion.questionTitleFile!==''" class="question-file-div">
+                <div v-if="subQuestion.fileType==='VOICE'">
+                  <audio ref="audioPlayer" controls>
+                    <source :src="subQuestion.questionTitleFile" type="audio/mp3">
+                  </audio>
+                </div>
+                <div v-else-if="subQuestion.fileType==='IMAGE'">
+                  <img :src="subQuestion.questionTitleFile" width="200" height="80">
+                </div>
+                <div v-else-if="subQuestion.fileType==='VIDEO'">
+                  <video
+                    ref="veo"
+                    :style="`object-fit: contain;`"
+                    :src="subQuestion.questionTitleFile"
+                    :width="750"
+                    :height="450"
+                    :autoplay="videoInfo.autoplay"
+                    :controls="videoInfo.controls"
+                    :loop="videoInfo.loop"
+                    :muted="videoInfo.muted"
+                    :preload="videoInfo.preload"
+                    crossorigin="anonymous"
+                    v-bind="$attrs">
+                  </video>
+                </div>
+              </div>
+              <!--选择-->
+              <div v-if="subQuestion.questionType==='CHOOSE'
+                  ||subQuestion.questionType==='JUDGE'
+                  ||subQuestion.questionType==='LISTEN'">
+                <el-row :gutter="23" style="margin-top: 20px;">
+                  <el-col :xs="24" :sm="24" :lg="12"
+                          v-show="subQuestion.optionA!=='' && subQuestion.optionA!==null">
+                    A、{{ subQuestion.optionA }}
+                  </el-col>
+                  <el-col :xs="24" :sm="24" :lg="12"
+                          v-show="subQuestion.optionB!=='' && subQuestion.optionB!==null">
+                    B、{{ subQuestion.optionB }}
+                  </el-col>
+                  <el-col :xs="24" :sm="24" :lg="12"
+                          v-show="subQuestion.optionC!=='' && subQuestion.optionC!==null">
+                    C、{{ subQuestion.optionC }}
+                  </el-col>
+                  <el-col :xs="24" :sm="24" :lg="12"
+                          v-show="subQuestion.optionD!=='' && subQuestion.optionD!==null">
+                    D、{{ subQuestion.optionD }}
+                  </el-col>
+                </el-row>
+              </div>
             </div>
           </div>
         </li>
@@ -108,6 +197,8 @@ export default {
       showStuAnswer: false,
       examinationsId: null,
       stuId: null,
+      stuScore: null,
+      hasPass: '1'
     }
   },
   mounted: function () {
@@ -127,39 +218,82 @@ export default {
       this.showStuAnswer = true
     }
   },
-  watch: {
-    '$route.params': {
-      immediate: false,
-      handler(newVal, oldVal) {
-        if (JSON.stringify(newVal) !== '{}') {
-          if (newVal.id !== null) {
-            this.examinationsId = newVal.id
-            this.getExaminationsDetail(this.examinationsId);
-          }
-          if (newVal.stuId == null) {
-            this.stuId = newVal.stuId
-            this.getExaminationsDetailByStuId(this.stuId);
-            this.showStuAnswer = true
-          }
-        }
-      }
-    },
-  },
   methods: {
+    backPage(){
+      this.$router.go(-1)
+    },
     getExaminationsDetail(examinationId) {
       ExaminationsDetail.getExaminationDetail(examinationId).then(res => {
-        if (res.content !== null) {
+        if (res.code === '0000' && res.content !== null) {
           this.content = res.content
+        } else {
+          this.$notify({
+            title: res.message,
+            type: 'warning',
+            duration: 1500
+          })
+          this.$router.go(-1)
         }
+      }).catch(() => {
+        this.$router.go(-1)
       })
     },
     getExaminationsDetailByStuId(stuId) {
       ExaminationsDetail.getExaminationsDetailByStuId(stuId).then(res => {
-        if (res.content !== null) {
+        if (res.code === '0000' && res.content !== null) {
           this.content = res.content
+        } else {
+          this.$notify({
+            title: res.message,
+            type: 'error',
+            duration: 1500
+          })
+          this.$router.go(-1)
+        }
+      }).catch(() => {
+        this.$router.go(-1)
+      })
+    },
+    score(questionId, batchId) {
+      const data = {
+        "id": batchId,
+        "hasPass": this.hasPass,
+        "scoreList": [
+          {
+            "questionId": questionId,
+            "score": this.stuScore
+          }
+        ]
+      }
+      ExaminationsDetail.markExamination(data).then(res => {
+        if (res.code === '0000') {
+          this.$notify({
+            title: '阅卷成功',
+            type: 'success',
+            duration: 1500
+          })
+          if (this.examinationsId !== null) {
+            this.getExaminationsDetail(this.examinationsId);
+          }
+          if (this.stuId !== null) {
+            this.getExaminationsDetailByStuId(this.stuId);
+            this.showStuAnswer = true
+          }
+        } else {
+          this.$notify({
+            title: '阅卷失败',
+            type: 'warning',
+            duration: 1500
+          })
         }
       })
     },
+    hasProperty(key, obj) {
+      return key in obj;
+    },
+    isEmptyValue(key, obj) {
+      return obj[key] === null || obj[key] !== undefined || obj[key] !== '';
+    }
   }
 }
 </script>
@@ -169,7 +303,11 @@ export default {
   text-align: center;
 
   p {
-    margin-left: 60%;
+    margin-left: 50%;
+  }
+
+  .el-button {
+    margin-left: 10%;
   }
 }
 
@@ -192,6 +330,11 @@ export default {
 
   .el-col {
     padding-bottom: 10px;
+  }
+
+  .operate-button {
+    margin-top: 20px;
+    margin-left: 55%;
   }
 }
 

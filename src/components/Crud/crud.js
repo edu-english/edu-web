@@ -149,17 +149,18 @@ function CRUD(options) {
           if (data.code!=="0000"){
             crud.loading = false
             reject(data.message)
+          }else {
+            const res=data.content
+            crud.page.total = res.total
+            crud.data = res.data
+            crud.resetDataStatus()
+            // time 毫秒后显示表格
+            setTimeout(() => {
+              crud.loading = false
+              callVmHook(crud, CRUD.HOOK.afterRefresh)
+            }, crud.time)
+            resolve(data)
           }
-          const res=data.content
-          crud.page.total = res.total
-          crud.data = res.data
-          crud.resetDataStatus()
-          // time 毫秒后显示表格
-          setTimeout(() => {
-            crud.loading = false
-            callVmHook(crud, CRUD.HOOK.afterRefresh)
-          }, crud.time)
-          resolve(data)
         }).catch(err => {
           crud.loading = false
           reject(err)

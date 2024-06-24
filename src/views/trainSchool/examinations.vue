@@ -2,20 +2,19 @@
   <div class="app-container">
     <!--工具栏-->
     <div class="head-container">
-      <!--      <div v-if="crud.props.searchToggle">-->
-      <!--        &lt;!&ndash; 搜索 &ndash;&gt;-->
-      <!--        <el-input-->
-      <!--          v-model="query.blurry"-->
-      <!--          clearable-->
-      <!--          size="small"-->
-      <!--          placeholder="输入名称或者邮箱搜索"-->
-      <!--          style="width: 200px;"-->
-      <!--          class="filter-item"-->
-      <!--          @keyup.enter.native="crud.toQuery"-->
-      <!--        />-->
-      <!--        <date-range-picker v-model="query.createTime" class="date-item"/>-->
-      <!--        <rrOperation/>-->
-      <!--      </div>-->
+      <div v-if="crud.props.searchToggle">
+        <!-- 搜索 -->
+        <el-input
+          v-model="query.query"
+          clearable
+          size="small"
+          placeholder=""
+          style="width: 200px;"
+          class="filter-item"
+          @keyup.enter.native="crud.toQuery"
+        />
+        <rrOperation/>
+      </div>
       <crudOperation :permission="permission"></crudOperation>
     </div>
     <!--表单渲染-->
@@ -34,29 +33,29 @@
         <el-form-item label="试卷名称" prop="examinationName">
           <el-input v-model="form.examinationName"/>
         </el-form-item>
-        <el-form-item label="试卷类型" prop="examinationType">
-          <el-input v-model="form.examinationType"/>
-        </el-form-item>
+<!--        <el-form-item label="试卷类型" prop="examinationType">-->
+<!--          <el-input v-model="form.examinationType"/>-->
+<!--        </el-form-item>-->
         <el-form-item label="听力题数量" prop="listenCount">
-          <el-input v-model="form.listenCount" type="number"/>
+          <el-input-number v-model.number="form.listenCount" controls-position="right" size="large" :min="0" :max="100" studyPage/>
         </el-form-item>
         <el-form-item label="选择题题数量" prop="chooseCount">
-          <el-input v-model="form.chooseCount" type="number"/>
+          <el-input-number v-model.number="form.chooseCount" controls-position="right" size="large" :min="0" :max="100"/>
         </el-form-item>
         <el-form-item label="填空题数量" prop="completionCount">
-          <el-input v-model="form.completionCount" type="number"/>
+          <el-input-number v-model.number="form.completionCount" controls-position="right" size="large" :min="0" :max="100"/>
         </el-form-item>
         <el-form-item label="判断题数量" prop="judgeCount">
-          <el-input v-model="form.judgeCount" type="number"/>
+          <el-input-number v-model.number="form.judgeCount" controls-position="right" size="large" :min="0" :max="100"/>
         </el-form-item>
         <el-form-item label="阅读理解数量" prop="comprehensionCount">
-          <el-input v-model="form.comprehensionCount" type="number"/>
+          <el-input-number v-model.number="form.comprehensionCount" controls-position="right" size="large" :min="0" :max="100"/>
         </el-form-item>
         <el-form-item label="作文数量" prop="compositionCount">
-          <el-input v-model="form.compositionCount" type="number"/>
+          <el-input-number v-model.number="form.compositionCount" controls-position="right" size="large" :min="0" :max="1"/>
         </el-form-item>
-        <el-form-item label="难度" prop="difficultyLevel">
-          <el-input v-model="form.difficultyLevel" type="number"/>
+        <el-form-item label="等级" prop="difficultyLevel">
+          <el-input-number v-model.number="form.difficultyLevel" controls-position="right" size="large" :min="1" :max="100"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -71,14 +70,14 @@
       <el-table-column type="selection" width="55"/>
       <el-table-column :show-overflow-tooltip="true" prop="eduLevel" label="学生等级"/>
       <el-table-column :show-overflow-tooltip="true" prop="examinationName" label="试卷名称"/>
-      <el-table-column :show-overflow-tooltip="true" prop="examinationType" label="试卷类型"/>
+<!--      <el-table-column :show-overflow-tooltip="true" prop="examinationType" label="试卷类型"/>-->
       <el-table-column :show-overflow-tooltip="true" prop="listenCount" label="听力题数量"/>
       <el-table-column :show-overflow-tooltip="true" prop="chooseCount" label="选择题题数量"/>
       <el-table-column :show-overflow-tooltip="true" prop="completionCount" label="填空题数量"/>
       <el-table-column :show-overflow-tooltip="true" prop="judgeCount" label="判断题数量"/>
       <el-table-column :show-overflow-tooltip="true" prop="comprehensionCount" label="阅读理解数量"/>
       <el-table-column :show-overflow-tooltip="true" prop="compositionCount" label="作文数量"/>
-      <el-table-column :show-overflow-tooltip="true" prop="difficultyLevel" label="难度"/>
+      <el-table-column :show-overflow-tooltip="true" prop="difficultyLevel" label="等级"/>
       <el-table-column :show-overflow-tooltip="true" prop="createTime" label="创建日期"/>
       <el-table-column
         v-if="checkPer(['admin','examination:update','examination:delete'])"
@@ -97,7 +96,6 @@
 <!--                <router-link :to="'/learning/examinations/examinationsDetail/'+scope.row.id+'/null'">-->
 <!--                  详情-->
 <!--                </router-link>-->
-              </el-button>
             </el-col>
           </el-row>
         </template>
@@ -138,7 +136,7 @@ export default {
   components: {Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker},
   cruds() {
     return CRUD({
-      title: '试卷列表',
+      title: '试卷',
       url: '/api/examinations',
       // query: {phraseType: 'WORD'},
       crudMethod: {...crudExaminations}
@@ -200,11 +198,17 @@ export default {
 <style rel="stylesheet/scss" lang="scss">
 .dialog-form {
   margin: 0 2vh;
-
-  .el-select {
-    width: 53vh;
+  .el-input-number {
+    width: 36vh
   }
 
+  .el-input {
+    width: 36vh
+  }
+
+  .el-select {
+    width: 36vh
+  }
   a {
     text-decoration: underline; /* 添加下划线 */
     font-size: 14px;

@@ -2,20 +2,19 @@
   <div class="app-container">
     <!--工具栏-->
     <div class="head-container">
-      <!--      <div v-if="crud.props.searchToggle">
-              &lt;!&ndash; 搜索 &ndash;&gt;
-              <el-input
-                v-model="query.blurry"
-                clearable
-                size="small"
-                placeholder="输入名称或者邮箱搜索"
-                style="width: 200px;"
-                class="filter-item"
-                @keyup.enter.native="crud.toQuery"
-              />
-              <date-range-picker v-model="query.createTime" class="date-item"/>
-              <rrOperation/>
-            </div>-->
+      <div v-if="crud.props.searchToggle">
+        <!-- 搜索 -->
+        <el-input
+          v-model="query.account"
+          clearable
+          size="small"
+          placeholder=""
+          style="width: 200px;"
+          class="filter-item"
+          @keyup.enter.native="crud.toQuery"
+        />
+        <rrOperation/>
+      </div>
       <crudOperation :permission="permission">
         <el-button
           slot="right"
@@ -24,14 +23,15 @@
           size="mini"
           type="primary"
           icon="el-icon-plus"
-          @click="getFaceInfoToAdd">获取扫脸信息并新增学生
+          @click="toAddFaceStudent">新增学生
         </el-button>
       </crudOperation>
     </div>
     <!--新增学生表单渲染-->
     <el-dialog append-to-body :close-on-click-modal="false" :visible.sync="addStudentDialog"
                title="新增学生" width="520px" @close="closeForm">
-      <el-form ref="form" :model="initStudent" :rules="rules" size="small" label-position="left" label-width="90px">
+      <el-form ref="form" class="dialog-form" :model="initStudent" :rules="rules" size="small" label-position="left"
+               label-width="90px">
         <el-form-item label="学生头像" v-show="stuImg">
           <img :src="initStudent.headImg" width="100" height="100" alt="学生头像">
         </el-form-item>
@@ -42,7 +42,13 @@
           <el-input v-model="initStudent.studentName"/>
         </el-form-item>
         <el-form-item label="年级" prop="grade">
-          <el-input v-model="initStudent.grade"/>
+          <el-select v-model="initStudent.grade" placeholder="请选择">
+            <el-option
+              v-for="item in eduLevelList"
+              :key="item"
+              :label="item"
+              :value="item"/>
+          </el-select>
         </el-form-item>
         <el-form-item label="班级" prop="gradeClass">
           <el-input v-model="initStudent.gradeClass"/>
@@ -60,7 +66,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="text" @click="closeForm">取消</el-button>
-        <el-button type="primary" @click="operateStudent">确认</el-button>
+        <el-button type="primary" @click="operateStudent" :disabled="initStudent.headImg===null">确认</el-button>
       </div>
     </el-dialog>
 
@@ -134,7 +140,7 @@ export default {
   components: {Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker},
   cruds() {
     return CRUD({
-      title: '学生列表',
+      title: '学生',
       url: 'api/student',
       crudMethod: {...crudStudent}
     })
@@ -164,6 +170,11 @@ export default {
           {required: true, trigger: 'blur', validator: validPhone}
         ]
       },
+      eduLevelList: [
+        "小学",
+        "初中",
+        "高中"
+      ],
       initStudent: {
         id: null,
         customerId: null,
@@ -179,11 +190,13 @@ export default {
         signTime: null,
         studySchedule: null,
       },
+      intervalId: null,
       addStudentDialog: false,
       studyScheduleDialog: false,
       initStudySchedule: {},
       operate: '',
-      stuImg: false
+      stuImg: false,
+      studyScheduleShow: false
     }
   },
   created() {
@@ -191,7 +204,8 @@ export default {
       add: false,
       edit: false,
       del: true,
-      download: false
+      download: false,
+      reset:true
     }
   },
   mounted: function () {
@@ -207,23 +221,30 @@ export default {
         e.returnValue = false
       }
     },
-    getFaceInfoToAdd() {
-      crudStudent.getFaceInfo().then(res => {
-        const resData = res.content
-        if (resData === null) {
-          this.$notify({
-            title: '没有获取到扫脸信息，不能添加学生',
-            type: 'warning',
-            duration: 1500
-          })
-        } else {
-          this.addStudentDialog = true
-          this.initStudent.customerId = resData.customId
-          this.initStudent.headImg = resData.info.picURI
-          this.operate = 'add'
-          this.stuImg = true
-        }
-      })
+    toAddFaceStudent() {
+      this.addStudentDialog = true
+      this.operate = 'add'
+      this.stuImg = true
+      this.intervalId = setInterval(this.fetchData, 1000);
+    },
+    async fetchData() {
+      try {
+        // 假设 fetchUserData 是获取用户数据的异步函数
+        const userData = await crudStudent.getFaceInfo().then(res => {
+          const resData = res.content
+          if (resData !== null) {
+            this.initStudent.customerId = resData.customId
+            this.initStudent.headImg = resData.info.picURI
+            return this.initStudent
+          }
+        });
+        this.initStudent = {
+          ...this.formData,
+          ...userData
+        };
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
     },
     toEdit(data) {
       this.initStudent = data
@@ -243,12 +264,13 @@ export default {
             })
           } else {
             this.$notify({
-              title: '新增学生信息失败',
+              title: res.message,
               type: 'error',
               duration: 1500
             })
           }
           this.reload()
+          clearInterval(this.intervalId); // 清除定时器
         })
       } else if (this.operate === 'edit') {
         crudStudent.edit(this.initStudent).then(res => {
@@ -260,16 +282,18 @@ export default {
             })
           } else {
             this.$notify({
-              title: '编辑学生信息失败',
+              title: res.message,
               type: 'error',
               duration: 1500
             })
           }
           this.reload()
+          clearInterval(this.intervalId); // 清除定时器
         })
       }
     },
     closeForm() {
+      clearInterval(this.intervalId); // 清除定时器
       this.addStudentDialog = false
       if (this.operate === 'add') {
         this.$refs.form.resetFields()
@@ -296,9 +320,21 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-.el-form {
+.dialog-form {
   .el-input-number .el-input__inner {
     text-align: left;
+  }
+
+  .el-input-number {
+    width: 36vh
+  }
+
+  .el-input {
+    width: 36vh
+  }
+
+  .el-select {
+    width: 36vh
   }
 }
 

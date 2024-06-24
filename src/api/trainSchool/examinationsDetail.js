@@ -14,5 +14,17 @@ export function getExaminationsDetailByStuId(stuId) {
   })
 }
 
-export default {getExaminationDetail, getExaminationsDetailByStuId}
+
+//阅卷
+export function markExamination(data) {
+  return request({
+    url: '/api/examinations/markExamination',
+    method: 'post',
+    data
+  })
+}
+
+
+
+export default {getExaminationDetail, getExaminationsDetailByStuId,markExamination}
 

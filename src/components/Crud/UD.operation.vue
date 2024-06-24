@@ -51,9 +51,9 @@ export default {
       this.pop = true
     },
     [CRUD.HOOK.afterDelete](crud, data) {
-      if (data === this.data) {
+      // if (data === this.data) {
         this.pop = false
-      }
+      // }
     },
     onPopoverShow() {
       setTimeout(() => {

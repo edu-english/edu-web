@@ -2,6 +2,19 @@
   <div class="app-container">
     <!--工具栏-->
     <div class="head-container">
+      <div v-if="crud.props.searchToggle">
+        <!-- 搜索 -->
+        <el-input
+          v-model="query.query"
+          clearable
+          size="small"
+          placeholder=""
+          style="width: 200px;"
+          class="filter-item"
+          @keyup.enter.native="crud.toQuery"
+        />
+        <rrOperation/>
+      </div>
       <crudOperation :permission="permission"/>
     </div>
     <!--表单渲染-->
@@ -39,7 +52,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="学生名称" prop="studentId">
-          <el-select v-model="form.studentId" filterable allow-create placeholder="请选择" @change="studentChange">
+          <el-select v-model="form.studentId" filterable allow-create placeholder="请选择" @input="studentChange">
             <el-option
               v-for="item in studentInfoList"
               :key="item.id"
@@ -120,7 +133,7 @@ export default {
   components: {Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker},
   cruds() {
     return CRUD({
-      title: '手动录入成绩列表',
+      title: '手动录入成绩',
       url: 'api/student/scoreList',
       crudMethod: {...crudScore}
     })
@@ -156,7 +169,8 @@ export default {
       add: true,
       edit: false,
       del: false,
-      download: false
+      download: false,
+      reset:true
     }
   },
   mounted: function () {
@@ -187,13 +201,15 @@ export default {
       this.form.studentName = this.selectedStuInfo.studentName
     },
     studentChange(studentId) {
+      this.selectedStuInfo={}
       for (let i = 0; i < this.studentInfoList.length; i++) {
         const stuInfo = this.studentInfoList[i]
-        if (stuInfo.id === studentId) {
+        if (stuInfo.studentName === studentId || stuInfo.id===studentId) {
           this.selectedStuInfo = stuInfo
         }
       }
-      if (this.selectedStuInfo==null) {
+      if (JSON.stringify(this.selectedStuInfo)==='{}') {
+        console.log("=====")
         this.selectedStuInfo = {
           id: 0,
           studentName: studentId

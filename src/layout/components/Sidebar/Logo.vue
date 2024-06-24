@@ -25,7 +25,7 @@ export default {
   },
   data() {
     return {
-      title: '维龙英语教育系统',
+      title: '思维定律系统',
       logo: Logo
     }
   }

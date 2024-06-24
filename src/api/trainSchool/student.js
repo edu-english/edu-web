@@ -32,9 +32,16 @@ export function getFaceInfo() {
 }
 
 /*学习进度*/
-export function getStudentStudySchedule(studentId) {
+export function getStudentStudySchedule(studentId, size, page) {
   return request({
-    url: '/api/student/getStudentStudySchedule?id=' + studentId,
+    url: '/api/student/getStudentStudySchedule?id=' + studentId + '&size=' + size + '&page=' + page,
+    method: 'get'
+  })
+}
+
+export function getStuAllExamList(studentId, size, page) {
+  return request({
+    url: '/api/student/allExamination?studentId=' + studentId + '&size=' + size + '&page=' + page,
     method: 'get'
   })
 }
@@ -47,5 +54,5 @@ export function getStudentStudyScheduleDetail(studentId, trainId, detailType, si
 }
 
 
-export default {add, edit, del, getFaceInfo, getStudentStudySchedule, getStudentStudyScheduleDetail}
+export default {add, edit, del, getFaceInfo, getStudentStudySchedule, getStuAllExamList, getStudentStudyScheduleDetail}
 

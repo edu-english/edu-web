@@ -2,7 +2,7 @@ module.exports = {
   /**
    * @description 网站标题
    */
-  title: '维龙英语教育系统',
+  title: '思维定律系统',
   /**
    * @description 是否显示 tagsView
    */

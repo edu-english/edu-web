@@ -26,11 +26,19 @@ export function edit(data) {
 
 export function getTrainInfo(id) {
   return request({
-    url: 'api/training/byId?id=' + id,
+    url: '/api/training/byId?id=' + id,
+    method: 'get'
+  })
+}
+
+//试卷下拉框
+export function examinationsSelect(eduLevel, difficultyLevel) {
+  return request({
+    url: '/api/examinations/select?eduLevel=' + eduLevel + '&difficultyLevel=' + difficultyLevel,
     method: 'get'
   })
 }
 
 
-export default {add, edit, del, getTrainInfo}
+export default {add, edit, del, getTrainInfo,examinationsSelect}
 

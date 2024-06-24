@@ -2,32 +2,20 @@
   <div class="app-container">
     <!--工具栏-->
     <div class="head-container">
-      <!--      <div v-if="crud.props.searchToggle">-->
-      <!--        &lt;!&ndash; 搜索 &ndash;&gt;-->
-      <!--        <el-input-->
-      <!--          v-model="query.blurry"-->
-      <!--          clearable-->
-      <!--          size="small"-->
-      <!--          placeholder="输入名称或者邮箱搜索"-->
-      <!--          style="width: 200px;"-->
-      <!--          class="filter-item"-->
-      <!--          @keyup.enter.native="crud.toQuery"-->
-      <!--        />-->
-      <!--        <date-range-picker v-model="query.createTime" class="date-item"/>-->
-      <!--        <rrOperation/>-->
-      <!--      </div>-->
-      <crudOperation :permission="permission">
-        <el-button
-          slot="right"
+      <div v-if="crud.props.searchToggle">
+        <!-- 搜索 -->
+        <el-input
+          v-model="query.query"
+          clearable
+          size="small"
+          placeholder=""
+          style="width: 200px;"
           class="filter-item"
-          type="primary"
-          icon="el-icon-search"
-          size="mini"
-          :loading="crud.loading"
-          :disabled="crud.selections.length !== 1"
-          @click="getContentInfo(crud.selections[0])">查看计划内容
-        </el-button>
-      </crudOperation>
+          @keyup.enter.native="crud.toQuery"
+        />
+        <rrOperation/>
+      </div>
+      <crudOperation :permission="permission"></crudOperation>
     </div>
     <!--表单渲染-->
     <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU"
@@ -37,12 +25,23 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="计划类型" prop="eduLevel">
-              <el-select v-model="form.trainType" placeholder="请选择">
+              <el-select v-model="form.trainType" placeholder="请选择" @change="trainTypeChange(form.trainType)">
                 <el-option
                   v-for="item in trainTypeList"
                   :key="item.type"
                   :label="item.desc"
                   :value="item.type"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24" v-show="!showPlanContent">
+            <el-form-item label="试卷" prop="trainDescription">
+              <el-select v-model="form.examId" placeholder="请选择">
+                <el-option
+                  v-for="item in examinationInfoList"
+                  :key="item.id"
+                  :label="item.examination_name"
+                  :value="item.id"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -64,12 +63,12 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="计划等级" prop="trainLevel">
-              <el-input v-model="form.trainLevel" type="number"/>
+              <el-input-number v-model.number="form.trainLevel" controls-position="right" size="large" :min="1" :max="100"/>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="计划序号" prop="trainSerialNumber">
-              <el-input v-model="form.trainSerialNumber" type="number"/>
+              <el-input-number v-model.number="form.trainSerialNumber" controls-position="right" size="large" :min="1" :max="100"/>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -77,10 +76,10 @@
               <el-input v-model="form.trainDescription"/>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :span="24" v-show="showPlanContent">
             <el-form v-for="(item, index) in this.trainContent" :key="index" class="plan-content-form">
-              <el-form-item label="内容" :prop="'trainContent.'+index+'.wordPhrase'" label-width="90px">
-                <el-input v-model.trim="item.wordPhrase"/>
+              <el-form-item label="英文释义"  :prop="'trainContent.'+index+'.wordPhrase'" label-width="90px">
+                <el-input v-model="item.wordPhrase" rows="5" type="textarea" class="input-textarea"/>
               </el-form-item>
               <el-form-item label="视频资料" :prop="'trainContent.'+index+'.videoFile'" label-width="90px">
                 <el-upload
@@ -129,11 +128,11 @@
                 </el-upload>
               </el-form-item>
               <el-form-item label="中文释义" :prop="'trainContent.'+index+'.chineseMean'" label-width="90px">
-                <el-input v-model.trim="item.chineseMean" rows="5" type="textarea" class="input-textarea"/>
+                <el-input v-model="item.chineseMean" rows="5" type="textarea" class="input-textarea"/>
               </el-form-item>
             </el-form>
           </el-col>
-          <el-col :span="24">
+          <el-col :span="24" v-show="showPlanContent">
             <el-form-item>
               <el-button @click.prevent="removeSetting()" v-show="delButtonTrainContent">删除选项</el-button>
               <el-button icon="el-icon-circle-plus-outline" @click="addSetting()">新增内容选项</el-button>
@@ -160,6 +159,7 @@
           <span v-if="scope.row.trainType==='SITIATIONAL'">情景对话</span>
           <span v-if="scope.row.trainType==='SHORT_TEXT'">短文阅读</span>
           <span v-if="scope.row.trainType==='AUDIO_VISUAL'">视听训练</span>
+          <span v-if="scope.row.trainType==='LEVEL_TEST'">等级测试</span>
         </template>
       </el-table-column>
       <el-table-column :show-overflow-tooltip="true" prop="trainDescription" label="计划描述"/>
@@ -167,13 +167,11 @@
       <el-table-column
         v-if="checkPer(['admin','training:update','training:delete'])"
         label="操作"
-        width="115"
-        align="center"
-        fixed="right">
+        width="240"
+        align="center">
         <template slot-scope="scope">
-          <udOperation
-            :data="scope.row"
-            :permission="permission"></udOperation>
+          <udOperation :data="scope.row" :permission="permission" style="display: inline"/>
+          <el-button size="mini" type="primary" @click="getContentInfo(scope.row)" v-show="scope.row.trainType!=='LEVEL_TEST'">查看计划内容</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -183,7 +181,7 @@
     <!--计划内容-->
     <el-dialog class="plan-content-dialog" :visible="this.contentDialog" @close="contentDialogClose" width="1200px">
       <el-table ref="table" v-loading="crud.loading" :data="this.trainContent" style="height: 50vh;">
-        <el-table-column :show-overflow-tooltip="true" prop="wordPhrase" label="内容名称"/>
+        <el-table-column :show-overflow-tooltip="true" prop="wordPhrase" label="英文释义"/>
         <el-table-column :show-overflow-tooltip="true" prop="videoFile" label="视频资料">
           <template slot-scope="scope">
             <a @click="openVideo(scope.row.videoFile)">视频资料</a>
@@ -251,6 +249,7 @@ const defaultForm = {
   eduLevel: '小学',
   trainSerialNumber: '',
   trainName: '',
+  trainType: 'WORD',
   trainContent: [
     {
       wordPhrase: '',
@@ -261,13 +260,14 @@ const defaultForm = {
       childVoiceFile: ''
     }
   ],
+  examId: null,
 }
 export default {
   name: 'plan',
   components: {Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker},
   cruds() {
     return CRUD({
-      title: '词汇列表',
+      title: '词汇',
       url: '/api/training',
       crudMethod: {...crudPlan}
     })
@@ -294,7 +294,9 @@ export default {
         {type: 'SITIATIONAL', desc: '情景对话'},
         {type: 'SHORT_TEXT', desc: '短文阅读'},
         {type: 'AUDIO_VISUAL', desc: '视听训练'},
+        {type: 'LEVEL_TEST', desc: '等级测试'},
       ],
+      examinationInfoList: [],
       trainContent: [],
       loading: false,
       videoDialog: false,
@@ -312,7 +314,8 @@ export default {
         // contain:保存原有比例，内容以包含方式缩放;
         // cover:保存原有比例，内容以覆盖方式缩放
         zoom: 'contain',
-      }
+      },
+      showPlanContent: true,
     }
   },
   mounted: function () {
@@ -326,7 +329,8 @@ export default {
       add: true,
       edit: true,
       del: true,
-      download: false
+      download: false,
+      reset:true
     }
   },
   methods: {
@@ -344,17 +348,18 @@ export default {
       ]
     },
     [CRUD.HOOK.beforeToEdit](crud, form) {
-      crudPlan.getTrainInfo(form.id).then(res => {
-        this.trainContent = res.content.trainContent
-      })
+      if (form.trainType==='LEVEL_TEST'){
+        this.trainTypeChange(form.trainType)
+      }else {
+        crudPlan.getTrainInfo(form.id).then(res => {
+          this.trainContent = res.content.trainContent
+        })
+      }
     },
     [CRUD.HOOK.beforeSubmit]() {
       if (this.trainContent.length > 0) {
         this.form.trainContent = this.trainContent
       }
-    },
-    [CRUD.HOOK.afterSubmit]() {
-      this.reload();
     },
     [CRUD.HOOK.afterAddCancel]() {
       this.reload();
@@ -421,7 +426,7 @@ export default {
     },
     openVideo(videoUrl) {
       this.videoDialog = true
-      this.videoInfo.videoUrl =videoUrl //'https://edu-study-2024.oss-cn-hangzhou.aliyuncs.com/vocabulary/d8d8c184dfce497abfde78257f57eb9e.mp4'
+      this.videoInfo.videoUrl = videoUrl //'https://edu-study-2024.oss-cn-hangzhou.aliyuncs.com/vocabulary/d8d8c184dfce497abfde78257f57eb9e.mp4'
     },
     onPlay() {
       if (this.videoInfo.autoplay) {
@@ -434,6 +439,21 @@ export default {
       this.$refs.veo.currentTime = 0
       this.$refs.veo.pause()
       this.videoDialog = false
+    },
+    trainTypeChange(val) {
+      if (val === 'LEVEL_TEST') {
+        //todo
+        const eduLevel = ''
+        const difficultyLevel = ''
+        crudPlan.examinationsSelect(eduLevel,difficultyLevel).then(res => {
+          if (res.content !==null) {
+            this.examinationInfoList=res.content
+          }
+        })
+        this.showPlanContent = false
+      } else {
+        this.showPlanContent = true
+      }
     },
     handleExceed(files, fileList) {
       this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
@@ -454,15 +474,17 @@ export default {
 <style rel="stylesheet/scss" lang="scss">
 .dialog-form {
   margin: 0 2vh;
-
-  .el-select {
-    width: 80%;
+  .el-input-number {
+    width: 36vh
   }
 
   .el-input {
-    width: 80%
+    width: 36vh
   }
 
+  .el-select {
+    width: 36vh
+  }
   .plan-content-form {
     border: #b7b1b1 1px solid;
     padding: 10px 0px 0 0;

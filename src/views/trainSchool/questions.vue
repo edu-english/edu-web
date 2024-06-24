@@ -2,20 +2,19 @@
   <div class="app-container">
     <!--工具栏-->
     <div class="head-container">
-      <!--      <div v-if="crud.props.searchToggle">-->
-      <!--        &lt;!&ndash; 搜索 &ndash;&gt;-->
-      <!--        <el-input-->
-      <!--          v-model="query.blurry"-->
-      <!--          clearable-->
-      <!--          size="small"-->
-      <!--          placeholder="输入名称或者邮箱搜索"-->
-      <!--          style="width: 200px;"-->
-      <!--          class="filter-item"-->
-      <!--          @keyup.enter.native="crud.toQuery"-->
-      <!--        />-->
-      <!--        <date-range-picker v-model="query.createTime" class="date-item"/>-->
-      <!--        <rrOperation/>-->
-      <!--      </div>-->
+      <div v-if="crud.props.searchToggle">
+        <!-- 搜索 -->
+        <el-input
+          v-model="query.query"
+          clearable
+          size="small"
+          placeholder=""
+          style="width: 200px;"
+          class="filter-item"
+          @keyup.enter.native="crud.toQuery"
+        />
+        <rrOperation/>
+      </div>
       <crudOperation :permission="permission">
       </crudOperation>
     </div>
@@ -79,7 +78,7 @@
         <el-form-item label="答案" prop="answer" v-show="form.questionType!=='COMPREHENSION'">
           <el-input v-model="form.answer" placeholder="多选题时答案以,拼接。示例：a,c"/>
         </el-form-item>
-        <el-form-item label="难度" prop="difficultyLevel">
+        <el-form-item label="等级" prop="difficultyLevel">
           <el-input-number v-model="form.difficultyLevel" controls-position="right" size="large" :min="1" :max="100"
                            style="width: 36vh"/>
         </el-form-item>
@@ -161,7 +160,7 @@
       <!--      <el-table-column :show-overflow-tooltip="true" prop="optionC" label="选项C"/>-->
       <!--      <el-table-column :show-overflow-tooltip="true" prop="optionD" label="选项D"/>-->
       <!--      <el-table-column :show-overflow-tooltip="true" prop="answer" label="答案/答案选项"/>-->
-      <el-table-column :show-overflow-tooltip="true" prop="difficultyLevel" label="难度"/>
+      <el-table-column :show-overflow-tooltip="true" prop="difficultyLevel" label="等级"/>
       <!--      <el-table-column :show-overflow-tooltip="true" prop="createTime" label="创建日期"/>-->
       <el-table-column
         v-if="checkPer(['admin','question:update','question:delete'])"
@@ -191,7 +190,7 @@
         :style="`object-fit: ${videoInfo.zoom};`"
         :src="videoInfo.videoUrl"
         :width="750"
-        :height="60"
+        :height="450"
         :autoplay="videoInfo.autoplay"
         :controls="videoInfo.controls"
         :loop="videoInfo.loop"
@@ -262,7 +261,7 @@
         <el-form-item label="答案" prop="answer">
           <el-input v-model="childForm.answer" placeholder="多选题时答案以,拼接。示例：a,c"/>
         </el-form-item>
-        <el-form-item label="难度" prop="difficultyLevel">
+        <el-form-item label="等级" prop="difficultyLevel">
           <el-input-number v-model="childForm.difficultyLevel" controls-position="right" size="large" :min="1"
                            :max="100" style="width: 36vh"/>
         </el-form-item>
@@ -329,7 +328,7 @@
           </span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" prop="difficultyLevel" label="难度"/>
+        <el-table-column :show-overflow-tooltip="true" prop="difficultyLevel" label="等级"/>
         <el-table-column
           v-if="checkPer(['admin','question:update','question:delete'])"
           label="操作"
@@ -384,7 +383,7 @@ export default {
   components: {Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker},
   cruds() {
     return CRUD({
-      title: '题库列表',
+      title: '题库',
       url: '/api/questions/bank',
       // query: {phraseType: 'WORD'},
       crudMethod: {...crudQuestions}
@@ -536,9 +535,6 @@ export default {
         this.optionShow = false
       }
     },
-    [CRUD.HOOK.afterSubmit]() {
-      this.reload();
-    },
     [CRUD.HOOK.afterAddCancel]() {
       this.reload();
     },
@@ -565,8 +561,20 @@ export default {
     },
     addChildQuestion() {
       this.childForm = {
+        id: null,
+        pid: 0,
         eduLevel: '小学',
+        gradeClass: null,
         questionType: 'CHOOSE',
+        questionTitle: null,
+        questionTitleFile: '',
+        score: null,
+        difficultyLevel: null,
+        optionA: null,
+        optionB: null,
+        optionC: null,
+        optionD: null,
+        answer: null
       }
       this.questionTitleFileVal = null
       this.childDialog = true
@@ -575,8 +583,20 @@ export default {
     },
     editChildQuestion(data) {
       this.childForm = {
+        id: null,
+        pid: 0,
         eduLevel: '小学',
+        gradeClass: null,
         questionType: 'CHOOSE',
+        questionTitle: null,
+        questionTitleFile: '',
+        score: null,
+        difficultyLevel: null,
+        optionA: null,
+        optionB: null,
+        optionC: null,
+        optionD: null,
+        answer: null
       }
       this.questionTitleFileVal = null
       this.childDialog = true
@@ -718,11 +738,15 @@ export default {
 .dialog-form {
   margin: 0 2vh;
 
-  .el-select {
-    width: 36vh;
+  .el-input-number {
+    width: 36vh
   }
 
   .el-input {
+    width: 36vh
+  }
+
+  .el-select {
     width: 36vh
   }
 

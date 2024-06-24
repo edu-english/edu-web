@@ -6,7 +6,7 @@
         ref="tag"
         :key="tag.path"
         :class="isActive(tag)?'active':''"
-        :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
+        :to="{ name: tag.name, query: tag.query, fullPath: tag.fullPath }"
         tag="span"
         class="tags-view-item"
         @click.middle.native="closeSelectedTag(tag)"
@@ -101,6 +101,9 @@ export default {
     },
     addTags() {
       const { name } = this.$route
+      if(name==='studySchedule' || name==='examinationsDetail'){
+        return false
+      }
       if (name) {
         this.$store.dispatch('tagsView/addView', this.$route)
       }
