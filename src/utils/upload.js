@@ -70,23 +70,52 @@ export async function ossPut(file, pathPrefix) {
 
 export async function ossRemove(fileName) {
   try {
-    const token = await request({url: 'api/aliyun/oss', method: 'get'}).then((token) => {
-      return token
-    })
+    if (isCredentialsExpired(credentials)) {
+      credentials = await request({url: 'api/aliyun/oss', method: 'get'}).then((token) => {
+        console.log("请求token==" + JSON.stringify(token.content))
+        return token.content
+      })
+    }
+
     const client = new OSS({
-      region: token.content.domain,
-      accessKeyId: token.content.accessKeyId,
-      accessKeySecret: token.content.accessKeySecret,
-      stsToken: token.content.securityToken,
-      refreshSTSTokenInterval: token.content.expiration,//// 刷新临时访问凭证的时间间隔，单位为毫秒。
-      bucket: token.content.bucket, //bucket名字
-      secure: true
+      region: credentials.domain,
+      accessKeyId: credentials.accessKeyId,
+      accessKeySecret: credentials.accessKeySecret,
+      stsToken: credentials.securityToken,
+      bucket: credentials.bucket, //bucket名字
+      secure: true,
+
     });
     // 填写Object完整路径。Object完整路径中不能包含Bucket名称。
     const result = await client.delete(fileName);
-    console.log(result);
+    console.log('File deleted:', result);
   } catch (error) {
-    console.log(error);
+    console.error('Delete file error:', error);
+  }
+}
+export async function ossRemoveMulti(fileNames) {
+  try {
+    if (isCredentialsExpired(credentials)) {
+      credentials = await request({url: 'api/aliyun/oss', method: 'get'}).then((token) => {
+        console.log("请求token==" + JSON.stringify(token.content))
+        return token.content
+      })
+    }
+
+    const client = new OSS({
+      region: credentials.domain,
+      accessKeyId: credentials.accessKeyId,
+      accessKeySecret: credentials.accessKeySecret,
+      stsToken: credentials.securityToken,
+      bucket: credentials.bucket, //bucket名字
+      secure: true,
+
+    });
+    // 填写Object完整路径。Object完整路径中不能包含Bucket名称。
+    const result = await client.deleteMulti(fileNames, {quiet: true})
+    console.log('File ossRemoveMulti:', result);
+  } catch (error) {
+    console.error('Delete ossRemoveMulti error:', error);
   }
 }
 

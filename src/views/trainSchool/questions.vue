@@ -25,7 +25,7 @@
                :title="crud.status.title" width="520px">
       <el-form class="dialog-form" ref="form" :model="form" size="small" label-position="left" label-width="90px">
         <el-form-item label="题类型" prop="questionType">
-          <el-select v-model="form.questionType" placeholder="请选择" @change="questionsChange(form.questionType)">
+          <el-select v-model="form.questionType" placeholder="请选择" @change="questionsChange(form.questionType)" class="form-put">
             <el-option
               v-for="item in questionsTypeList"
               :key="item.type"
@@ -34,7 +34,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="学生类型" prop="eduLevel">
-          <el-select v-model="form.eduLevel" placeholder="请选择">
+          <el-select v-model="form.eduLevel" placeholder="请选择" class="form-put">
             <el-option
               v-for="item in eduLevelList"
               :key="item"
@@ -43,44 +43,47 @@
           </el-select>
         </el-form-item>
         <el-form-item label="班级" prop="gradeClass">
-          <el-input v-model="form.gradeClass"/>
+          <el-input v-model="form.gradeClass" class="form-put"/>
         </el-form-item>
         <el-form-item label="题内容" prop="questionTitle">
-          <el-input v-model="form.questionTitle"/>
+          <el-input v-model="form.questionTitle" class="form-put"/>
         </el-form-item>
         <el-form-item label="题内容文件" prop="questionTitleFile">
           <el-upload
             ref="upload"
-            class="upload-demo"
+            class="form-put"
             action="#"
             :limit="1"
+            :file-list="this.questionTitleFileNameList"
             :on-exceed="handleExceed"
+            :before-remove="beforeRemove"
+            :on-remove="(file,fileList)=>{handleRemove(file,fileList,null)}"
             :http-request="ossUpload">
             <a>请上传文件</a>
           </el-upload>
         </el-form-item>
         <el-form-item label="分值" prop="score">
           <el-input-number v-model="form.score" controls-position="right" size="large" :min="1" :max="100"
-                           style="width: 36vh"/>
+                           class="form-put"/>
         </el-form-item>
         <el-form-item label="选项A" prop="optionA" v-show="optionShow">
-          <el-input v-model="form.optionA"/>
+          <el-input v-model="form.optionA" class="form-put"/>
         </el-form-item>
         <el-form-item label="选项B" prop="optionB" v-show="optionShow">
-          <el-input v-model="form.optionB"/>
+          <el-input v-model="form.optionB" class="form-put"/>
         </el-form-item>
         <el-form-item label="选项C" prop="optionC" v-show="optionShow">
-          <el-input v-model="form.optionC"/>
+          <el-input v-model="form.optionC" class="form-put"/>
         </el-form-item>
         <el-form-item label="选项D" prop="optionD" v-show="optionShow">
-          <el-input v-model="form.optionD"/>
+          <el-input v-model="form.optionD" class="form-put"/>
         </el-form-item>
         <el-form-item label="答案" prop="answer" v-show="form.questionType!=='COMPREHENSION'">
-          <el-input v-model="form.answer" placeholder="多选题时答案以,拼接。示例：a,c"/>
+          <el-input v-model="form.answer" placeholder="多选题时答案以,拼接。示例：a,c" class="form-put"/>
         </el-form-item>
         <el-form-item label="等级" prop="difficultyLevel">
           <el-input-number v-model="form.difficultyLevel" controls-position="right" size="large" :min="1" :max="100"
-                           style="width: 36vh"/>
+                           class="form-put"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -174,7 +177,8 @@
               <udOperation :data="scope.row" :permission="permission"/>
             </el-col>
             <el-col :span="5">
-              <el-button size="mini" type="primary" icon="el-icon-more" @click="getChildQuestionList(scope.row.id)" v-show="scope.row.questionType==='COMPREHENSION'"/>
+              <el-button size="mini" type="primary" icon="el-icon-more" @click="getChildQuestionList(scope.row.id)"
+                         v-show="scope.row.questionType==='COMPREHENSION'"/>
             </el-col>
           </el-row>
         </template>
@@ -208,7 +212,8 @@
                width="520px">
       <el-form class="dialog-form" ref="form" :model="childForm" size="small" label-position="left" label-width="90px">
         <el-form-item label="题类型" prop="questionType">
-          <el-select v-model="childForm.questionType" placeholder="请选择" @change="questionsChange(childForm.questionType)">
+          <el-select v-model="childForm.questionType" placeholder="请选择"
+                     @change="questionsChange(childForm.questionType)" class="form-put">
             <el-option
               v-for="item in childQuestionsTypeList"
               :key="item.type"
@@ -217,7 +222,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="学生类型" prop="eduLevel">
-          <el-select v-model="childForm.eduLevel" placeholder="请选择">
+          <el-select v-model="childForm.eduLevel" placeholder="请选择" class="form-put">
             <el-option
               v-for="item in eduLevelList"
               :key="item"
@@ -226,48 +231,51 @@
           </el-select>
         </el-form-item>
         <el-form-item label="班级" prop="gradeClass">
-          <el-input v-model="childForm.gradeClass"/>
+          <el-input v-model="childForm.gradeClass" class="form-put"/>
         </el-form-item>
         <el-form-item label="题内容" prop="questionTitle">
-          <el-input v-model="childForm.questionTitle"/>
+          <el-input v-model="childForm.questionTitle" class="form-put"/>
         </el-form-item>
         <el-form-item label="题内容文件" prop="questionTitleFile">
           <el-upload
-            class="upload-demo"
+            class="form-put"
             ref="upload"
             action="#"
             :limit="1"
+            :file-list="this.questionTitleFileNameList"
             :on-exceed="handleExceed"
+            :before-remove="beforeRemove"
+            :on-remove="(file,fileList)=>{handleRemove(file,fileList,'child')}"
             :http-request="ossUpload">
             <a>请上传文件</a>
           </el-upload>
         </el-form-item>
         <el-form-item label="分值" prop="score">
           <el-input-number v-model="childForm.score" controls-position="right" size="large" :min="1" :max="100"
-                           style="width: 36vh"/>
+                           class="form-put"/>
         </el-form-item>
         <el-form-item label="选项A" prop="optionA" v-show="optionShow">
-          <el-input v-model="childForm.optionA"/>
+          <el-input v-model="childForm.optionA" class="form-put"/>
         </el-form-item>
         <el-form-item label="选项B" prop="optionB" v-show="optionShow">
-          <el-input v-model="childForm.optionB"/>
+          <el-input v-model="childForm.optionB" class="form-put"/>
         </el-form-item>
         <el-form-item label="选项C" prop="optionC" v-show="optionShow">
-          <el-input v-model="childForm.optionC"/>
+          <el-input v-model="childForm.optionC" class="form-put"/>
         </el-form-item>
         <el-form-item label="选项D" prop="optionD" v-show="optionShow">
-          <el-input v-model="childForm.optionD"/>
+          <el-input v-model="childForm.optionD" class="form-put"/>
         </el-form-item>
         <el-form-item label="答案" prop="answer">
-          <el-input v-model="childForm.answer" placeholder="多选题时答案以,拼接。示例：a,c"/>
+          <el-input v-model="childForm.answer" placeholder="多选题时答案以,拼接。示例：a,c" class="form-put"/>
         </el-form-item>
         <el-form-item label="等级" prop="difficultyLevel">
           <el-input-number v-model="childForm.difficultyLevel" controls-position="right" size="large" :min="1"
-                           :max="100" style="width: 36vh"/>
+                           :max="100"  class="form-put"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="text" @click="outerVisible = false">取消</el-button>
+        <el-button type="text" @click="childDialog = false">取消</el-button>
         <el-button type="primary" @click="submitChild">确认</el-button>
       </div>
     </el-dialog>
@@ -358,9 +366,8 @@ import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 import DateRangePicker from '@/components/DateRangePicker'
 import Treeselect from '@riophae/vue-treeselect'
-import {mapGetters} from 'vuex'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import {ossPut} from "@/utils/upload"
+import {ossPut, ossRemove} from "@/utils/upload"
 
 const defaultForm = {
   id: null,
@@ -370,6 +377,7 @@ const defaultForm = {
   questionType: 'LISTEN',
   questionTitle: null,
   questionTitleFile: '',
+  questionTitleFileName: '',
   score: null,
   difficultyLevel: null,
   optionA: null,
@@ -450,6 +458,8 @@ export default {
       ],
       optionShow: true,
       questionTitleFileVal: null,
+      questionTitleFileName: null,
+      questionTitleFileNameList: [],
       loading: false,
       childDialog: false,
       childDialogTable: false,
@@ -492,7 +502,8 @@ export default {
       },
       showImg: false,
       showVideo: false,
-      headImg: ''
+      headImg: '',
+      fileUrlPathname:null
     }
   },
   mounted: function () {
@@ -510,12 +521,6 @@ export default {
     }
   },
   methods: {
-    // 禁止输入空格
-    keydown(e) {
-      if (e.keyCode === 32) {
-        e.returnValue = false
-      }
-    },
     questionsChange(val) {
       if (this.optionShowList.includes(val)) {
         this.optionShow = true
@@ -526,6 +531,10 @@ export default {
     [CRUD.HOOK.beforeSubmit]() {
       if (this.questionTitleFileVal !== null) {
         this.form.questionTitleFile = this.questionTitleFileVal
+        this.form.questionTitleFileName = this.questionTitleFileName
+      }
+      if (this.fileUrlPathname!==null){
+        ossRemove(this.fileUrlPathname)
       }
     },
     [CRUD.HOOK.beforeToEdit](crud, form) {
@@ -533,6 +542,11 @@ export default {
         this.optionShow = true
       } else {
         this.optionShow = false
+      }
+      if (form.questionTitleFileName === null || form.questionTitleFileName === '' || form.questionTitleFileName === '[]') {
+        this.questionTitleFileNameList = []
+      } else {
+        this.questionTitleFileNameList = [{name: form.questionTitleFileName, url: this.form.questionTitleFile}]
       }
     },
     [CRUD.HOOK.afterAddCancel]() {
@@ -547,6 +561,7 @@ export default {
         if (res !== null) {
           this.loading = false
           this.questionTitleFileVal = res.val
+          this.questionTitleFileName = res.name
         }
       })
     },
@@ -576,7 +591,9 @@ export default {
         optionD: null,
         answer: null
       }
+      this.questionTitleFileNameList = []
       this.questionTitleFileVal = null
+      this.questionTitleFileName = null
       this.childDialog = true
       this.operate = 'add'
       this.childTitle = '新增子题库'
@@ -599,14 +616,24 @@ export default {
         answer: null
       }
       this.questionTitleFileVal = null
+      this.questionTitleFileName = null
       this.childDialog = true
       this.childForm = data
+      if (this.childForm.questionTitleFileName === null || this.childForm.questionTitleFileName === '' || this.childForm.questionTitleFileName === '[]') {
+        this.questionTitleFileNameList = []
+      } else {
+        this.questionTitleFileNameList = [{name: this.childForm.questionTitleFileName, url: this.childForm.questionTitleFile}]
+      }
       this.operate = 'edit'
       this.childTitle = '编辑子题库'
     },
     submitChild() {
-      if (this.questionTitleFileVal !== null) {
-        this.childForm.questionTitleFile = this.questionTitleFileVal
+      if (this.fileUrlPathname!==null){
+        ossRemove(this.fileUrlPathname)
+        this.childForm.questionTitleFile=null
+        this.childForm.questionTitleFileName=null
+        this.questionTitleFileVal=null
+        this.questionTitleFileName=null
       }
       this.childForm.pid = this.pid
       if (this.operate === 'add') {
@@ -650,7 +677,6 @@ export default {
           this.$refs.upload.clearFiles(); // 清除文件列表的显示
         })
       }
-
     },
     toDeleteChild(row) {
       this.$confirm(`确认移除${row.questionTitle}？`, '提示', {
@@ -709,6 +735,20 @@ export default {
     handleExceed(files, fileList) {
       this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
     },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    handleRemove(file, fileList,type) {
+      const fileUrl = new URL(file.url);
+      this.fileUrlPathname=fileUrl.pathname
+      if (type===null){
+        this.form.questionTitleFile=null
+        this.form.questionTitleFileName=null
+        this.questionTitleFileVal=null
+        this.questionTitleFileName=null
+      }
+
+    }
   }
 }
 </script>
@@ -738,16 +778,12 @@ export default {
 .dialog-form {
   margin: 0 2vh;
 
-  .el-input-number {
-    width: 36vh
+  .form-put {
+    width: 80%;
   }
 
-  .el-input {
-    width: 36vh
-  }
-
-  .el-select {
-    width: 36vh
+  .form-put input {
+    text-align: left;
   }
 
   a {
@@ -758,10 +794,6 @@ export default {
     font-weight: 400;
   }
 
-  .input-textarea {
-    background: #F2F2F2;
-    border-radius: 4px;
-  }
 }
 </style>
 

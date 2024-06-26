@@ -1,9 +1,8 @@
 <template>
   <div class="login" :style="'background-image:url('+ Background +');'">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left" label-width="0px" class="login-form">
-      <h3 class="title">
-        思维定律系统
-      </h3>
+      <img :src="logo" class="login-logo">
+      <h3 class="title">思维定律系统</h3>
       <el-form-item prop="username">
         <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
@@ -43,6 +42,7 @@
 
 <script>
 import { encrypt } from '@/utils/rsaEncrypt'
+import Logo from '@/assets/images/logo.png'
 import Config from '@/settings'
 import { getCodeImg } from '@/api/login'
 import Cookies from 'js-cookie'
@@ -68,7 +68,8 @@ export default {
         code: [{ required: true, trigger: 'change', message: '验证码不能为空' }]
       },
       loading: false,
-      redirect: undefined
+      redirect: undefined,
+      logo:Logo
     }
   },
   watch: {
@@ -182,16 +183,26 @@ export default {
 }
 
 .title {
+  display: inline-block;
   margin: 0 auto 30px auto;
-  text-align: center;
   color: #707070;
+  vertical-align: middle;
+  font-size: 50px;
+  font-weight: 600;
+}
+
+.login-logo {
+  width: 100px;
+  height: 100px;
+  vertical-align: middle;
+  margin: 0 auto 30px 20px;
 }
 
 .login-form {
   border-radius: 6px;
   background: #ffffff;
-  width: 385px;
-  padding: 25px 25px 5px 25px;
+  width: 500px;
+  padding: 25px 30px;
 
   .el-input {
     height: 38px;

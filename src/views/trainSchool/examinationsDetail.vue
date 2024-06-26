@@ -1,23 +1,20 @@
 <template>
   <div class="app-container">
-    <div style="width: 100%; height: 25px; margin-bottom: 10px">
+    <div class="page-header-container">
       <el-page-header @back="backPage" content="试卷详情"/>
-      <hr/>
+      <el-button type="primary" icon="el-icon-printer" size="mini" @click="printerExamInfo()">打印</el-button>
     </div>
-    <div class="head-content">
+    <hr>
+    <div class="head-content" id="head-content">
       <h3>{{ content.examName }} </h3>
-      <p v-if="content.studentScore!==null">得分：{{ content.studentScore }}
-      </p>
-    </div>
-    <div class="question-div">
+      <p v-if="content.studentScore!==null">得分：{{ content.studentScore }}</p>
       <ol class="question-ol">
         <li v-for="examination in content.examination" :key="examination.examId">
-          {{ examination.questionTitle }}
+          <div style="margin-top: 20px">{{ examination.questionTitle }}</div>
           <div class="child-question" v-for="(question,index) in examination.questions">
             <div>
-              {{ index + 1 }}、{{ question.questionTitle }}
               <span>
-                （{{ question.score }}分）
+                {{ index + 1 }}、{{ question.questionTitle }}（{{ question.score }}分）
                  <span v-if="question.questionType!=='COMPOSITION' && question.questionType!=='COMPREHENSION'">正确答案（ {{ question.answer }} ）</span>
               </span>
               <span class="stu-answer" v-show="showStuAnswer && question.questionType!=='COMPOSITION' && question.questionType!=='COMPREHENSION'">学生答案（ {{question.studentAnswer}} ）</span>
@@ -26,7 +23,7 @@
             <div v-if="question.questionTitleFile!==null && question.questionTitleFile!==''" class="question-file-div">
               <div v-if="question.fileType==='VOICE'">
                 <audio ref="audioPlayer" controls>
-                  <source :src="question.questionTitleFile" type="audio/mp3">
+                  <source :src="question.questionTitleFile" type="audio/mpeg">
                 </audio>
               </div>
               <div v-else-if="question.fileType==='IMAGE'">
@@ -53,7 +50,7 @@
             <div v-if="question.questionType==='CHOOSE'
                   ||question.questionType==='JUDGE'
                   ||question.questionType==='LISTEN'">
-              <el-row :gutter="23" style="margin-top: 20px;">
+              <el-row :gutter="23" style="margin-top: 20px; margin-left: 20px">
                 <el-col :xs="24" :sm="24" :lg="12"
                         v-show="question.optionA!=='' && question.optionA!==null">
                   A、{{ question.optionA }}
@@ -71,6 +68,7 @@
                   D、{{ question.optionD }}
                 </el-col>
               </el-row>
+              <br/>
             </div>
             <!--作文内容-->
             <div v-show="showStuAnswer && question.questionType==='COMPOSITION'">
@@ -97,9 +95,8 @@
             <!--阅读理解下小题-->
             <div class="child-question" v-show="question.questionType==='COMPREHENSION'" v-for="(subQuestion,subIndex) in question.subQuestions">
               <div>
-                {{ subIndex + 1 }}、{{ subQuestion.questionTitle }}
                 <span>
-                （{{ subQuestion.score }}分）
+                   {{ subIndex + 1 }}、{{ subQuestion.questionTitle }}（{{ subQuestion.score }}分）
                  <span v-if="question.questionType!=='COMPOSITION'">正确答案（ {{ subQuestion.answer }} ）</span>
               </span>
                 <span class="stu-answer" v-show="showStuAnswer && subQuestion.questionType!=='COMPOSITION'">学生答案（ {{subQuestion.studentAnswer}} ）</span>
@@ -108,7 +105,7 @@
               <div v-if="subQuestion.questionTitleFile!==null && subQuestion.questionTitleFile!==''" class="question-file-div">
                 <div v-if="subQuestion.fileType==='VOICE'">
                   <audio ref="audioPlayer" controls>
-                    <source :src="subQuestion.questionTitleFile" type="audio/mp3">
+                    <source :src="subQuestion.questionTitleFile" type="audio/mpeg">
                   </audio>
                 </div>
                 <div v-else-if="subQuestion.fileType==='IMAGE'">
@@ -119,7 +116,7 @@
                     ref="veo"
                     :style="`object-fit: contain;`"
                     :src="subQuestion.questionTitleFile"
-                    :width="750"
+                    :width="700"
                     :height="450"
                     :autoplay="videoInfo.autoplay"
                     :controls="videoInfo.controls"
@@ -152,6 +149,7 @@
                           v-show="subQuestion.optionD!=='' && subQuestion.optionD!==null">
                     D、{{ subQuestion.optionD }}
                   </el-col>
+                  <br/>
                 </el-row>
               </div>
             </div>
@@ -165,7 +163,7 @@
 <script>
 import ExaminationsDetail from '@/api/trainSchool/examinationsDetail'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-
+import printJS from 'print-js'
 
 export default {
   name: 'examinationsDetail',
@@ -198,7 +196,8 @@ export default {
       examinationsId: null,
       stuId: null,
       stuScore: null,
-      hasPass: '1'
+      hasPass: '1',
+      loading: false,
     }
   },
   mounted: function () {
@@ -221,6 +220,14 @@ export default {
   methods: {
     backPage(){
       this.$router.go(-1)
+    },
+    printerExamInfo(){
+      printJS({
+        type:'html',
+        printable: 'head-content',
+        targetStyles:['*'],
+        maxWidth:'800px'
+      })
     },
     getExaminationsDetail(examinationId) {
       ExaminationsDetail.getExaminationDetail(examinationId).then(res => {
@@ -299,27 +306,29 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-.head-content {
-  text-align: center;
+.page-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 25px;
+}
 
+.head-content {
+
+  h3{
+    text-align: center;
+  }
   p {
     margin-left: 50%;
   }
 
-  .el-button {
-    margin-left: 10%;
-  }
-}
-
-.question-div {
   ol.question-ol {
     list-style-type: cjk-ideographic;
   }
 
-  padding-left: 20px;
-
   .child-question {
-    padding: 25px 0;
+    padding-top: 25px;
     margin-left: 20px;
   }
 

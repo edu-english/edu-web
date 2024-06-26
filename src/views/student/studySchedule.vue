@@ -75,23 +75,8 @@
       </el-dialog>
 
       <el-dialog :visible.sync="videoDialog" width="800px" >
-<!--        <video-->
-<!--          ref="veo"-->
-<!--          :style="`object-fit: ${videoInfo.zoom};`"-->
-<!--          :src="videoInfo.videoUrl"-->
-<!--          :width="750"-->
-<!--          :height="60"-->
-<!--          :autoplay="videoInfo.autoplay"-->
-<!--          :controls="videoInfo.controls"-->
-<!--          :loop="videoInfo.loop"-->
-<!--          :muted="videoInfo.muted"-->
-<!--          :preload="videoInfo.preload"-->
-<!--          crossorigin="anonymous"-->
-<!--          @click.prevent.once="onPlay"-->
-<!--          v-bind="$attrs">-->
-<!--        </video>-->
         <audio ref="audioPlayer" controls style=" width:750px">
-          <source :src="videoInfo.videoUrl" type="audio/mpeg">
+          <source :src="this.audioUrl" type="audio/mpeg">
         </audio>
       </el-dialog>
 
@@ -195,21 +180,7 @@ export default {
       trainId: null,
       detailDialog: false,
       videoDialog: false,
-      videoInfo: {
-        poster: '', //视频封面uri
-        videoUrl: '',
-        autoplay: false, //视频就绪后是否马上播放
-        controls: true, //控件 进度条、全屏等
-        loop: false,//播放完成后，是否循环播放
-        muted: false,//是否静音
-        showPlay: false,//播放暂停是否显示暂停图标
-        playWidth: 96,// 中间播放暂停按钮的边长
-        // none:(默认)保存原有内容，不进行缩放;
-        // fill:不保持原有比例，内容拉伸填充整个内容容器;
-        // contain:保存原有比例，内容以包含方式缩放;
-        // cover:保存原有比例，内容以覆盖方式缩放
-        zoom: 'contain',
-      }
+      audioUrl:null
     }
   },
   mounted: function () {
@@ -217,6 +188,12 @@ export default {
     window.onresize = function temp() {
       that.height = document.documentElement.clientHeight - 180 + 'px;'
     }
+    // 确保audioPlayer元素已经被渲染
+    this.$nextTick(() => {
+      if (this.$refs.audioPlayer) {
+        this.$refs.audioPlayer.load();
+      }
+    });
   },
   created() {
     this.detailDialog = false
@@ -225,12 +202,6 @@ export default {
     this.getStuAllExamList();
   },
   methods: {
-    // 禁止输入空格
-    keydown(e) {
-      if (e.keyCode === 32) {
-        e.returnValue = false
-      }
-    },
     backPage(){
       this.$router.go(-1)
     },
@@ -293,21 +264,14 @@ export default {
       this.reload()
     },
     openVideo(videoUrl) {
+      this.audioUrl = videoUrl
+      // 确保audioPlayer元素已经被渲染
+      this.$nextTick(() => {
+        if (this.$refs.audioPlayer) {
+          this.$refs.audioPlayer.load();
+        }
+      });
       this.videoDialog = true
-      this.videoInfo.videoUrl = videoUrl
-      console.log("video url==="+this.videoInfo.videoUrl)
-    },
-    onPlay() {
-      if (this.videoInfo.autoplay) {
-        this.$refs.veo.pause()
-      } else {
-        this.$refs.veo.play()
-      }
-    },
-    videoClose() {
-      this.$refs.veo.currentTime = 0
-      this.$refs.veo.pause()
-      this.videoDialog = false
     },
     openStudyExaminationsDetail(id) {
       this.detailDialog = false

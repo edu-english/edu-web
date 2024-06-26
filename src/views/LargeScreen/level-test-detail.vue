@@ -8,75 +8,85 @@
         type="primary"
         @click="cancel()">取消
       </el-button>
-      <el-input type="text" placeholder="请输入内容" v-model="query.blurry"></el-input>
-      <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="searchClick">搜索
-      </el-button>
+      <div style="margin-top: 20px">
+        <el-select v-model="query" filterable placeholder="请选择">
+          <el-option
+            v-for="item in studentInfoList"
+            :key="item.id"
+            :label="item.studentName"
+            :value="item.id"/>
+        </el-select>
+        <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="searchClick">搜索
+        </el-button>
+      </div>
     </div>
-    <div class="detail-info">
+    <div class="detail-info" v-show="showDetail">
       <div class="detail-info-title">
-        {{ title1.title_detail.title }}<span style="padding: 0 10px">|</span>{{ title1.title_detail.level }}
+        {{ testInfo.grade }}<span style="padding: 0 10px">|</span>Level{{ testInfo.level }}
       </div>
       <div class="detail-info-row">
         <el-row>
           <el-col :span="12">
-            <span>报名时间</span> 2024-02-01
-          </el-col>
-          <el-col :span="12">
-            <span>学习课时</span> 10
+            <span>报名时间</span> {{ testInfo.createTime }}
           </el-col>
         </el-row>
       </div>
     </div>
-    <div class="detail-table">
-      <el-table ref="table" v-loading="loading" :data="detailInfos"
+    <div class="detail-table" v-show="showDetail">
+      <el-table ref="table" v-loading="loading" :data="testInfo.detailInfos"
                 :cell-style="cellStyle"
                 :header-cell-style="headerRowStyle"
                 border style="width: 100%;">
-        <el-table-column :show-overflow-tooltip="true" prop="createTime" label="时间" />
-        <el-table-column :show-overflow-tooltip="true" prop="readCount" label="级别测试分数" />
+        <el-table-column :show-overflow-tooltip="true" prop="times" label="时间"/>
+        <el-table-column :show-overflow-tooltip="true" prop="score" label="级别测试分数"/>
       </el-table>
+      <!--分页组件-->
+      <el-pagination
+        :page-size.sync="page.size"
+        :total="page.total"
+        :current-page.sync="page.currentPage"
+        style="margin-top: 8px;"
+        layout="total, prev, pager, next, sizes"
+        @size-change="sizeChangeHandler($event)"
+        @current-change="pageChangeHandler"
+      />
     </div>
   </div>
 </template>
 
 <script>
 
+import crudScore from "@/api/trainSchool/score";
+import levelTest from "@/api/LargeScreen/level-test";
+
 export default {
+  props:{
+    eduLevel:{
+      type:String,
+      require:false
+    }
+  },
   data() {
     return {
-      title1: {
-        "title": "小学",
-        "childTitle": "杭州第一小学 · 三年级2班",
-        "learnCount": 10,
-        "title_detail": {
-          "title": "小学",
-          "level": "Level1",
-          "learnCount": 5,
-          "learnCount1": 5,
-          "resContent": [
-            {
-              "title": "x",
-              "total": 1100,
-              "learnCount": 600
-            },
-            {
-              "title": "k",
-              "total": 1100,
-              "learnCount": 500
-            }
-          ]
-        },
+      query: null,
+      testInfo: {
+        level: null,
+        grade: null,
+        createTime: null,
+        detailInfos: [],
       },
-      query: {
-        blurry: ""
+      loading: false,
+      showDetail: false,
+      studentInfoList: [],
+      page: {
+        // 页码
+        page: 0,
+        // 每页数据条数
+        size: 10,
+        // 总数据条数
+        total: 0,
+        currentPage: 1
       },
-      detailInfos: [
-        {createTime: "2024-06-03", readCount: 90},
-        {createTime: "2024-06-02", readCount: 20},
-        {createTime: "2024-06-01", readCount: 41},
-        {createTime: "2024-05-31", readCount: 78}
-      ],
-      loading:false
     }
   },
   mounted() {
@@ -84,18 +94,42 @@ export default {
   },
   methods: {
     init() {
-      console.log("阅读理解数据===")
+      crudScore.getStudentInfoList(this.eduLevel).then(res => {
+        this.studentInfoList = res.content
+      })
     },
     searchClick() {
-      console.log("搜索=====")
+      levelTest.getLargeInfo(this.query, 'test', this.page.page, this.page.size).then(res => {
+        this.testInfo.level = res.content.level
+        this.testInfo.grade = res.content.grade
+        this.testInfo.createTime = res.content.createTime
+        this.testInfo.detailInfos = res.content.pageData.data
+        this.page.total = res.content.pageData.total
+        this.showDetail = true
+      })
     },
     cancel() {
       this.$emit('send')
     },
-    headerRowStyle(){
+    // 每页条数改变
+    sizeChangeHandler(e) {
+      this.page.size = e
+      this.page.page = 0
+      this.page.currentPage = 1
+      //重新请求列表
+      this.searchClick()
+    },
+    // 当前页改变
+    pageChangeHandler(e) {
+      this.page.page = e - 1
+      this.page.currentPage = e
+      //重新请求列表
+      this.searchClick()
+    },
+    headerRowStyle() {
       return 'background: #D8D8D8; font-size: 18px; color: #000000'
     },
-    cellStyle(){
+    cellStyle() {
       return 'background: #F2F2F2; font-size: 14px; color: #000000'
     }
   }
@@ -126,6 +160,7 @@ export default {
       letter-spacing: 0;
       font-weight: 400;
     }
+
     .el-input {
       margin-top: 20px;
       width: 300px;
@@ -136,6 +171,7 @@ export default {
     height: 12vh;
     background: #fff;
     margin-top: 30px;
+
     .detail-info-title {
       height: 55px;
       font-size: 20px;
@@ -143,6 +179,7 @@ export default {
       letter-spacing: 0;
       font-weight: 500;
     }
+
     .detail-info-row {
       margin-top: 20px;
       font-size: 20px;
@@ -150,7 +187,7 @@ export default {
       letter-spacing: 0;
       font-weight: 500;
 
-      span{
+      span {
         padding-right: 20px;
         color: #8A9495;
       }

@@ -4,14 +4,14 @@
       <el-col :xs="24" :sm="24" :lg="8">
         <div class="card-panel-title">
           <span>{{ this.title1.title }}</span>
-          <!--          <el-button-->
-          <!--            class="filter-item"-->
-          <!--            size="mini"-->
-          <!--            type="primary"-->
-          <!--            icon="el-icon-search"-->
-          <!--            v-if="showStatistics"-->
-          <!--            @click="getCount()">查询-->
-          <!--          </el-button>-->
+            <el-button
+              class="filter-item"
+              size="mini"
+              type="primary"
+              icon="el-icon-search"
+              v-if="showStatistics"
+              @click="getCount(title1.title)">查询
+            </el-button>
         </div>
         <div class="chart-col">
           <!--          <div class="chart-title">-->
@@ -26,13 +26,13 @@
       <el-col :xs="24" :sm="24" :lg="8" v-if="showStatistics">
         <div class="card-panel-title">
           <span>{{ this.title2.title }}</span>
-          <!--          <el-button-->
-          <!--            class="filter-item"-->
-          <!--            size="mini"-->
-          <!--            type="primary"-->
-          <!--            icon="el-icon-search"-->
-          <!--            @click="getCount()">查询-->
-          <!--          </el-button>-->
+            <el-button
+              class="filter-item"
+              size="mini"
+              type="primary"
+              icon="el-icon-search"
+              @click="getCount(title2.title)">查询
+            </el-button>
         </div>
         <div class="chart-col">
           <!--          <div class="chart-title">-->
@@ -47,13 +47,13 @@
       <el-col :xs="24" :sm="24" :lg="8" v-if="showStatistics">
         <div class="card-panel-title">
           <span>{{ this.title3.title }}</span>
-          <!--          <el-button-->
-          <!--            class="filter-item"-->
-          <!--            size="mini"-->
-          <!--            type="primary"-->
-          <!--            icon="el-icon-search"-->
-          <!--            @click="getCount()">查询-->
-          <!--          </el-button>-->
+            <el-button
+              class="filter-item"
+              size="mini"
+              type="primary"
+              icon="el-icon-search"
+              @click="getCount(title3.title)">查询
+            </el-button>
         </div>
         <div class="chart-col">
           <!--          <div class="chart-title">-->
@@ -66,7 +66,7 @@
         </div>
       </el-col>
       <el-col :span="16" v-else="showStatistics">
-        <Read-detail @send="childCancel"/>
+        <Read-detail @send="childCancel" :eduLevel="eduLevel"/>
       </el-col>
     </el-row>
   </div>
@@ -76,6 +76,7 @@
 
 import Read from '@/api/LargeScreen/read.js'
 import ReadDetail from './read-detail'
+import Vocabulary from "@/api/LargeScreen/vocabulary";
 
 export default {
   name: 'LargeScreen-Read',
@@ -89,15 +90,13 @@ export default {
         "title": "小学",
         "childTitle": "杭州第一小学 · 三年级2班",
         "learnCount": 10,
-        "resContent": [
-        ]
+        "resContent": []
       },
       title2: {
         "title": "初中",
         "childTitle": "杭州第一初中 · 三年级2班",
         "learnCount": 20,
-        "resContent": [
-        ]
+        "resContent": []
       },
       title3: {
         "title": "高中",
@@ -107,11 +106,11 @@ export default {
       },
       showStatistics: true,
       loading: false,
+      eduLevel:null,
     }
   },
   mounted() {
     this.init()
-    // this.intervalId = setInterval(this.init, 5000 * 600); // 秒 刷新一次
   },
   methods: {
     init() {
@@ -129,7 +128,19 @@ export default {
         }
       })
     },
-    getCount() {
+    getCount(val) {
+      if (val==='小学') {
+        Read.chart_1(this.title1.resContent)
+      }
+      if (val==='初中') {
+        this.title1.title=this.title2.title
+        Read.chart_1(this.title2.resContent)
+      }
+      if (val==='高中') {
+        this.title1.title=this.title3.title
+        Read.chart_1(this.title3.resContent)
+      }
+      this.eduLevel=this.title1.title
       this.showStatistics = false
     },
     childCancel() {

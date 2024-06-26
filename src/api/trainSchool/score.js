@@ -9,9 +9,9 @@ export function add(data) {
 }
 
 
-export function getStudentInfoList() {
+export function getStudentInfoList(eduLevel) {
   return request({
-    url: '/api/student/select',
+    url: '/api/student/select?eduLevel='+eduLevel,
     method: 'get'
   })
 }
@@ -23,5 +23,12 @@ export function getTestNameList() {
   })
 }
 
-export default {add, getTestNameList,getStudentInfoList}
+export function del(ids) {
+  return request({
+    url: 'api/student/scoreList',
+    method: 'delete',
+    data: ids
+  })
+}
+export default {add,del, getTestNameList,getStudentInfoList}
 

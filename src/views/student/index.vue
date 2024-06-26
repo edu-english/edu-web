@@ -29,7 +29,7 @@
     </div>
     <!--新增学生表单渲染-->
     <el-dialog append-to-body :close-on-click-modal="false" :visible.sync="addStudentDialog"
-               title="新增学生" width="520px" @close="closeForm">
+               title="学生信息" width="520px" @close="closeForm">
       <el-form ref="form" class="dialog-form" :model="initStudent" :rules="rules" size="small" label-position="left"
                label-width="90px">
         <el-form-item label="学生头像" v-show="stuImg">

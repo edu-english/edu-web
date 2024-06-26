@@ -25,7 +25,8 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="计划类型" prop="eduLevel">
-              <el-select v-model="form.trainType" placeholder="请选择" @change="trainTypeChange(form.trainType)">
+              <el-select v-model="form.trainType" placeholder="请选择" @change="trainTypeChange(form.trainType)"
+                         class="form-put">
                 <el-option
                   v-for="item in trainTypeList"
                   :key="item.type"
@@ -36,7 +37,7 @@
           </el-col>
           <el-col :span="24" v-show="!showPlanContent">
             <el-form-item label="试卷" prop="trainDescription">
-              <el-select v-model="form.examId" placeholder="请选择">
+              <el-select v-model="form.examId" placeholder="请选择" class="form-put">
                 <el-option
                   v-for="item in examinationInfoList"
                   :key="item.id"
@@ -47,7 +48,7 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="学生类型" prop="eduLevel">
-              <el-select v-model="form.eduLevel" placeholder="请选择">
+              <el-select v-model="form.eduLevel" placeholder="请选择" class="form-put">
                 <el-option
                   v-for="item in eduLevelList"
                   :key="item"
@@ -58,75 +59,83 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="计划名称" prop="wordPhrase">
-              <el-input v-model="form.trainName"/>
+              <el-input v-model="form.trainName" class="form-put"/>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="计划等级" prop="trainLevel">
-              <el-input-number v-model.number="form.trainLevel" controls-position="right" size="large" :min="1" :max="100"/>
+              <el-input-number v-model.number="form.trainLevel" controls-position="right" size="large" :min="1"
+                               :max="100" class="form-put"/>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="计划序号" prop="trainSerialNumber">
-              <el-input-number v-model.number="form.trainSerialNumber" controls-position="right" size="large" :min="1" :max="100"/>
+              <el-input-number v-model.number="form.trainSerialNumber" controls-position="right" size="large" :min="1"
+                               :max="100" class="form-put"/>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="计划描述" prop="trainDescription">
-              <el-input v-model="form.trainDescription"/>
+              <el-input v-model="form.trainDescription" class="form-put"/>
             </el-form-item>
           </el-col>
           <el-col :span="24" v-show="showPlanContent">
             <el-form v-for="(item, index) in this.trainContent" :key="index" class="plan-content-form">
-              <el-form-item label="英文释义"  :prop="'trainContent.'+index+'.wordPhrase'" label-width="90px">
+              <el-form-item label="英文释义" :prop="'trainContent.'+index+'.wordPhrase'" label-width="90px">
                 <el-input v-model="item.wordPhrase" rows="5" type="textarea" class="input-textarea"/>
               </el-form-item>
               <el-form-item label="视频资料" :prop="'trainContent.'+index+'.videoFile'" label-width="90px">
                 <el-upload
-                  class="upload-demo"
+                  class="form-put"
                   ref="upload"
                   v-model.trim="item.videoFile"
                   action="#"
                   :limit="1"
+                  :file-list="item.videoFileNameList"
                   :on-exceed="handleExceed"
+                  :before-remove="beforeRemove"
                   :on-remove="(file,fileList)=>{handleRemove(file,fileList,index,'videoFile')}"
                   :http-request="function (file){return ossUpload(file,index,'videoFile')}">
                   <a>请上传文件</a>
                 </el-upload>
               </el-form-item>
-              <el-form-item label="男音频资料" :prop="'trainContent.'+index+'.manVoiceFile'" label-width="90px">
+              <el-form-item label="音频资料" :prop="'trainContent.'+index+'.manVoiceFile'" label-width="90px">
                 <el-upload
+                  class="form-put"
                   v-model.trim="item.manVoiceFile"
                   ref="upload"
                   action="#"
                   :limit="1"
+                  :file-list="item.manVoiceFileNameList"
                   :on-exceed="handleExceed"
+                  :before-remove="beforeRemove"
+                  :on-remove="(file,fileList)=>{handleRemove(file,fileList,index,'manVoiceFile')}"
                   :http-request="function (file){return ossUpload(file,index,'manVoiceFile')}">
                   <a>请上传文件</a>
                 </el-upload>
               </el-form-item>
-              <el-form-item label="女音频资料" :prop="'trainContent.'+index+'.womanVoiceFile'" label-width="90px">
-                <el-upload
-                  v-model.trim="item.womanVoiceFile"
-                  ref="upload"
-                  action="#"
-                  :limit="1"
-                  :on-exceed="handleExceed"
-                  :http-request="function (file){return ossUpload(file,index,'womanVoiceFile')}">
-                  <a>请上传文件</a>
-                </el-upload>
-              </el-form-item>
-              <el-form-item label="童音频资料" :prop="'trainContent.'+index+'.childVoiceFile'" label-width="90px">
-                <el-upload
-                  v-model.trim="item.childVoiceFile"
-                  ref="upload"
-                  action="#"
-                  :limit="1"
-                  :on-exceed="handleExceed"
-                  :http-request="function (file){return ossUpload(file,index,'childVoiceFile')}">
-                  <a>请上传文件</a>
-                </el-upload>
-              </el-form-item>
+              <!--              <el-form-item label="女音频资料" :prop="'trainContent.'+index+'.womanVoiceFile'" label-width="90px">
+                              <el-upload
+                                v-model.trim="item.womanVoiceFile"
+                                ref="upload"
+                                action="#"
+                                :limit="1"
+                                :on-exceed="handleExceed"
+                                :http-request="function (file){return ossUpload(file,index,'womanVoiceFile')}">
+                                <a>请上传文件</a>
+                              </el-upload>
+                            </el-form-item>
+                            <el-form-item label="童音频资料" :prop="'trainContent.'+index+'.childVoiceFile'" label-width="90px">
+                              <el-upload
+                                v-model.trim="item.childVoiceFile"
+                                ref="upload"
+                                action="#"
+                                :limit="1"
+                                :on-exceed="handleExceed"
+                                :http-request="function (file){return ossUpload(file,index,'childVoiceFile')}">
+                                <a>请上传文件</a>
+                              </el-upload>
+                            </el-form-item>-->
               <el-form-item label="中文释义" :prop="'trainContent.'+index+'.chineseMean'" label-width="90px">
                 <el-input v-model="item.chineseMean" rows="5" type="textarea" class="input-textarea"/>
               </el-form-item>
@@ -171,7 +180,9 @@
         align="center">
         <template slot-scope="scope">
           <udOperation :data="scope.row" :permission="permission" style="display: inline"/>
-          <el-button size="mini" type="primary" @click="getContentInfo(scope.row)" v-show="scope.row.trainType!=='LEVEL_TEST'">查看计划内容</el-button>
+          <el-button size="mini" type="primary" @click="getContentInfo(scope.row)"
+                     v-show="scope.row.trainType!=='LEVEL_TEST'">查看计划内容
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -180,28 +191,28 @@
 
     <!--计划内容-->
     <el-dialog class="plan-content-dialog" :visible="this.contentDialog" @close="contentDialogClose" width="1200px">
-      <el-table ref="table" v-loading="crud.loading" :data="this.trainContent" style="height: 50vh;">
+      <el-table ref="table" v-loading="crud.loading" :data="this.trainContent" height="500">
         <el-table-column :show-overflow-tooltip="true" prop="wordPhrase" label="英文释义"/>
         <el-table-column :show-overflow-tooltip="true" prop="videoFile" label="视频资料">
           <template slot-scope="scope">
             <a @click="openVideo(scope.row.videoFile)">视频资料</a>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" prop="manVoiceFile" label="男音频资料">
+        <el-table-column :show-overflow-tooltip="true" prop="manVoiceFile" label="音频资料">
           <template slot-scope="scope">
-            <a @click="openVideo(scope.row.manVoiceFile)">男音频资料</a>
+            <a @click="openVideo(scope.row.manVoiceFile)">音频资料</a>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" prop="womanVoiceFile" label="女音频资料">
-          <template slot-scope="scope">
-            <a @click="openVideo(scope.row.womanVoiceFile)">女音频资料</a>
-          </template>
-        </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" prop="childVoiceFile" label="童音频资料">
-          <template slot-scope="scope">
-            <a @click="openVideo(scope.row.childVoiceFile)">童音频资料</a>
-          </template>
-        </el-table-column>
+        <!--        <el-table-column :show-overflow-tooltip="true" prop="womanVoiceFile" label="女音频资料">
+                  <template slot-scope="scope">
+                    <a @click="openVideo(scope.row.womanVoiceFile)">女音频资料</a>
+                  </template>
+                </el-table-column>
+                <el-table-column :show-overflow-tooltip="true" prop="childVoiceFile" label="童音频资料">
+                  <template slot-scope="scope">
+                    <a @click="openVideo(scope.row.childVoiceFile)">童音频资料</a>
+                  </template>
+                </el-table-column>-->
         <el-table-column :show-overflow-tooltip="true" prop="chineseMean" label="中文释义"/>
         <el-table-column :show-overflow-tooltip="true" prop="createTime" label="创建日期"/>
       </el-table>
@@ -238,7 +249,7 @@ import pagination from '@crud/Pagination'
 import DateRangePicker from '@/components/DateRangePicker'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import {ossPut} from "@/utils/upload";
+import {ossPut, ossRemoveMulti} from "@/utils/upload";
 
 const defaultForm = {
   id: null,
@@ -255,7 +266,11 @@ const defaultForm = {
       wordPhrase: '',
       chineseMean: '',
       videoFile: '',
+      videoFileName: null,
+      videoFileNameList: [],
       manVoiceFile: '',
+      manVoiceFileName: null,
+      manVoiceFileNameList: [],
       womanVoiceFile: '',
       childVoiceFile: ''
     }
@@ -316,6 +331,7 @@ export default {
         zoom: 'contain',
       },
       showPlanContent: true,
+      removeOssFile:[]
     }
   },
   mounted: function () {
@@ -330,7 +346,7 @@ export default {
       edit: true,
       del: true,
       download: false,
-      reset:true
+      reset: true
     }
   },
   methods: {
@@ -341,24 +357,47 @@ export default {
           wordPhrase: '',
           chineseMean: '',
           videoFile: '',
+          videoFileName: null,
+          videoFileNameList: [],
           manVoiceFile: '',
+          manVoiceFileName: null,
+          manVoiceFileNameList: [],
           womanVoiceFile: '',
           childVoiceFile: ''
         }
       ]
     },
     [CRUD.HOOK.beforeToEdit](crud, form) {
-      if (form.trainType==='LEVEL_TEST'){
+      if (form.trainType === 'LEVEL_TEST') {
         this.trainTypeChange(form.trainType)
-      }else {
+      } else {
         crudPlan.getTrainInfo(form.id).then(res => {
           this.trainContent = res.content.trainContent
+          for (let i = 0; i < this.trainContent.length; i++) {
+            const trainContent = this.trainContent[i]
+            if (trainContent.videoFileName === null || trainContent.videoFileName === '' || trainContent.videoFileName === '[]') {
+              trainContent.videoFileNameList = []
+            } else {
+              trainContent.videoFileNameList = [{name: trainContent.videoFileName, url: trainContent.videoFile}]
+            }
+            if (trainContent.manVoiceFileName === null || trainContent.manVoiceFileName === '' || trainContent.manVoiceFileName === '[]') {
+              trainContent.manVoiceFileNameList = []
+            } else {
+              trainContent.manVoiceFileNameList = [{
+                name: trainContent.manVoiceFileName,
+                url: trainContent.manVoiceFile
+              }]
+            }
+          }
         })
       }
     },
     [CRUD.HOOK.beforeSubmit]() {
       if (this.trainContent.length > 0) {
         this.form.trainContent = this.trainContent
+      }
+      if (this.removeOssFile.length>0){
+        ossRemoveMulti(this.removeOssFile)
       }
     },
     [CRUD.HOOK.afterAddCancel]() {
@@ -377,21 +416,20 @@ export default {
               wordPhrase: '',
               chineseMean: '',
               videoFile: '',
+              videoFileName: null,
+              videoFileNameList: [],
               manVoiceFile: '',
+              manVoiceFileName: null,
+              manVoiceFileNameList: [],
               womanVoiceFile: '',
               childVoiceFile: ''
             }
           }
           this.$set(this.trainContent[index], key, res.val);
+          this.$set(this.trainContent[index], key + 'Name', res.name);
           this.loading = false
         }
       })
-    },
-    // 禁止输入空格
-    keydown(e) {
-      if (e.keyCode === 32) {
-        e.returnValue = false
-      }
     },
     removeSetting() {
       var index = this.trainContent.length - 1
@@ -407,7 +445,11 @@ export default {
         wordPhrase: '',
         chineseMean: '',
         videoFile: '',
+        videoFileName: null,
+        videoFileNameList: [],
         manVoiceFile: '',
+        manVoiceFileName: null,
+        manVoiceFileNameList: [],
         womanVoiceFile: '',
         childVoiceFile: ''
       })
@@ -442,12 +484,11 @@ export default {
     },
     trainTypeChange(val) {
       if (val === 'LEVEL_TEST') {
-        //todo
         const eduLevel = ''
         const difficultyLevel = ''
-        crudPlan.examinationsSelect(eduLevel,difficultyLevel).then(res => {
-          if (res.content !==null) {
-            this.examinationInfoList=res.content
+        crudPlan.examinationsSelect(eduLevel, difficultyLevel).then(res => {
+          if (res.content !== null) {
+            this.examinationInfoList = res.content
           }
         })
         this.showPlanContent = false
@@ -458,15 +499,14 @@ export default {
     handleExceed(files, fileList) {
       this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
     },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
     handleRemove(file, fileList, index, key) {
-      this.$confirm(`确认移除${file.name}？`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$set(this.trainContent[index], key, '');
-      }).catch(() => {
-      })
+      const fileUrl = new URL(file.url);
+      this.removeOssFile.push(fileUrl.pathname.toString())
+      this.$set(this.trainContent[index], key, '');
+      this.$set(this.trainContent[index], key + 'Name', '');
     }
   }
 }
@@ -474,36 +514,35 @@ export default {
 <style rel="stylesheet/scss" lang="scss">
 .dialog-form {
   margin: 0 2vh;
-  .el-input-number {
-    width: 36vh
+
+  .form-put {
+    width: 80%;
   }
 
-  .el-input {
-    width: 36vh
+  .form-put input {
+    text-align: left;
   }
 
-  .el-select {
-    width: 36vh
-  }
   .plan-content-form {
     border: #b7b1b1 1px solid;
-    padding: 10px 0px 0 0;
+    padding: 10px 0 0 0;
     margin-bottom: 10px;
+
+    a {
+      text-decoration: underline; /* 添加下划线 */
+      font-size: 14px;
+      color: #8A9495;
+      letter-spacing: 0;
+      font-weight: 400;
+    }
+
+    .input-textarea {
+      background: #F2F2F2;
+      border-radius: 4px;
+      width: 80%
+    }
   }
 
-  a {
-    text-decoration: underline; /* 添加下划线 */
-    font-size: 14px;
-    color: #8A9495;
-    letter-spacing: 0;
-    font-weight: 400;
-  }
-
-  .input-textarea {
-    background: #F2F2F2;
-    border-radius: 4px;
-    width: 80%
-  }
 }
 
 .plan-content-dialog {

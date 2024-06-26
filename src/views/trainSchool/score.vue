@@ -22,7 +22,7 @@
                :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="570px">
       <el-form ref="form" :model="form" size="small" label-width="100px" class="score-form">
         <el-form-item label="学生类型" prop="eduLevel">
-          <el-select v-model="form.eduLevel" placeholder="请选择">
+          <el-select v-model="form.eduLevel" placeholder="请选择" class="form-put">
             <el-option
               v-for="item in eduLevelList"
               :key="item"
@@ -31,10 +31,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="班级" prop="gradeClass">
-          <el-input v-model="form.gradeClass"/>
+          <el-input v-model="form.gradeClass" class="form-put"/>
         </el-form-item>
         <el-form-item label="是否参加培训" prop="joinTrain">
-          <el-select v-model="form.joinTrain" placeholder="请选择">
+          <el-select v-model="form.joinTrain" placeholder="请选择" class="form-put">
             <el-option
               v-for="item in joinTrainList"
               :key="item.type"
@@ -43,7 +43,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="试卷名称" prop="testName">
-          <el-select v-model="form.testName" filterable allow-create placeholder="请选择">
+          <el-select v-model="form.testName" filterable allow-create placeholder="请选择" class="form-put">
             <el-option
               v-for="item in testNameList"
               :key="item.testName"
@@ -52,7 +52,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="学生名称" prop="studentId">
-          <el-select v-model="form.studentId" filterable allow-create placeholder="请选择" @input="studentChange">
+          <el-select v-model="form.studentId" filterable allow-create placeholder="请选择" @input="studentChange" class="form-put">
             <el-option
               v-for="item in studentInfoList"
               :key="item.id"
@@ -60,8 +60,8 @@
               :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="学校类型" prop="studentId">
-          <el-select v-model="form.school" placeholder="请选择">
+        <el-form-item label="学校类型" prop="school">
+          <el-select v-model="form.school" placeholder="请选择" class="form-put">
             <el-option
               v-for="item in schoolList"
               :key="item"
@@ -70,8 +70,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="成绩" prop="score">
-          <el-input-number v-model.number="form.score" controls-position="right" size="large" :min="1" :max="100"
-                           style=" width: 350px;"/>
+          <el-input-number v-model.number="form.score" controls-position="right" size="large" :min="1" :max="100" class="form-put"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -99,6 +98,16 @@
       <el-table-column :show-overflow-tooltip="true" prop="testName" label="试卷名称"/>
       <el-table-column :show-overflow-tooltip="true" prop="score" label="成绩"/>
       <el-table-column :show-overflow-tooltip="true" prop="createTime" label="创建日期"/>
+      <el-table-column
+        v-if="checkPer(['admin','recordScore:delete'])"
+        label="操作"
+        width="160"
+        align="center"
+        fixed="right">
+        <template slot-scope="scope">
+          <udOperation :data="scope.row" :permission="permission"/>
+        </template>
+      </el-table-column>
     </el-table>
     <!--分页组件-->
     <pagination/>
@@ -145,6 +154,8 @@ export default {
       height: document.documentElement.clientHeight - 180 + 'px;',
       permission: {
         add: ['admin', 'recordScore:add'],
+        edit: ['admin', 'recordScore:edit'],
+        del: ['admin', 'recordScore:del'],
       },
       eduLevelList: [
         "小学",
@@ -168,7 +179,7 @@ export default {
     this.crud.optShow = {
       add: true,
       edit: false,
-      del: false,
+      del: true,
       download: false,
       reset:true
     }
@@ -192,7 +203,7 @@ export default {
       crudScore.getTestNameList().then(res => {
         this.testNameList = res.content
       })
-      crudScore.getStudentInfoList().then(res => {
+      crudScore.getStudentInfoList('').then(res => {
         this.studentInfoList = res.content
       })
     },
@@ -222,16 +233,12 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss">
 .score-form {
-  .el-input-number .el-input__inner {
+  .form-put {
+    width: 80%;
+  }
+
+  .form-put input {
     text-align: left;
-  }
-
-  .el-select {
-    width: 350px;
-  }
-
-  .el-input {
-    width: 350px;
   }
 }
 

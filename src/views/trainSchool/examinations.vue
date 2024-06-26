@@ -22,7 +22,7 @@
                :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="520px">
       <el-form class="dialog-form" ref="form" :model="form" size="small" label-position="left" label-width="100px">
         <el-form-item label="学生类型" prop="eduLevel">
-          <el-select v-model="form.eduLevel" placeholder="请选择">
+          <el-select v-model="form.eduLevel" placeholder="请选择" class="form-put">
             <el-option
               v-for="item in eduLevelList"
               :key="item"
@@ -31,31 +31,31 @@
           </el-select>
         </el-form-item>
         <el-form-item label="试卷名称" prop="examinationName">
-          <el-input v-model="form.examinationName"/>
+          <el-input v-model="form.examinationName" class="form-put"/>
         </el-form-item>
 <!--        <el-form-item label="试卷类型" prop="examinationType">-->
 <!--          <el-input v-model="form.examinationType"/>-->
 <!--        </el-form-item>-->
         <el-form-item label="听力题数量" prop="listenCount">
-          <el-input-number v-model.number="form.listenCount" controls-position="right" size="large" :min="0" :max="100" studyPage/>
+          <el-input-number v-model.number="form.listenCount" controls-position="right" size="large" :min="0" :max="100"  class="form-put"/>
         </el-form-item>
         <el-form-item label="选择题题数量" prop="chooseCount">
-          <el-input-number v-model.number="form.chooseCount" controls-position="right" size="large" :min="0" :max="100"/>
+          <el-input-number v-model.number="form.chooseCount" controls-position="right" size="large" :min="0" :max="100" class="form-put"/>
         </el-form-item>
         <el-form-item label="填空题数量" prop="completionCount">
-          <el-input-number v-model.number="form.completionCount" controls-position="right" size="large" :min="0" :max="100"/>
+          <el-input-number v-model.number="form.completionCount" controls-position="right" size="large" :min="0" :max="100" class="form-put"/>
         </el-form-item>
         <el-form-item label="判断题数量" prop="judgeCount">
-          <el-input-number v-model.number="form.judgeCount" controls-position="right" size="large" :min="0" :max="100"/>
+          <el-input-number v-model.number="form.judgeCount" controls-position="right" size="large" :min="0" :max="100" class="form-put"/>
         </el-form-item>
         <el-form-item label="阅读理解数量" prop="comprehensionCount">
-          <el-input-number v-model.number="form.comprehensionCount" controls-position="right" size="large" :min="0" :max="100"/>
+          <el-input-number v-model.number="form.comprehensionCount" controls-position="right" size="large" :min="0" :max="100" class="form-put"/>
         </el-form-item>
         <el-form-item label="作文数量" prop="compositionCount">
-          <el-input-number v-model.number="form.compositionCount" controls-position="right" size="large" :min="0" :max="1"/>
+          <el-input-number v-model.number="form.compositionCount" controls-position="right" size="large" :min="0" :max="1" class="form-put"/>
         </el-form-item>
         <el-form-item label="等级" prop="difficultyLevel">
-          <el-input-number v-model.number="form.difficultyLevel" controls-position="right" size="large" :min="1" :max="100"/>
+          <el-input-number v-model.number="form.difficultyLevel" controls-position="right" size="large" :min="1" :max="100" class="form-put"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -198,16 +198,12 @@ export default {
 <style rel="stylesheet/scss" lang="scss">
 .dialog-form {
   margin: 0 2vh;
-  .el-input-number {
-    width: 36vh
+  .form-put {
+    width: 80%;
   }
 
-  .el-input {
-    width: 36vh
-  }
-
-  .el-select {
-    width: 36vh
+  .form-put input {
+    text-align: left;
   }
   a {
     text-decoration: underline; /* 添加下划线 */

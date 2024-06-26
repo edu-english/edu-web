@@ -10,28 +10,28 @@
       width="70%"
       :before-close="handleClose">
       <div class="title-div">{{ classroomName }}</div>
-      <div>
+<!--      <div>
         <el-form :inline="true" :model="initStudent">
           <el-row :gutter="23" type="flex" justify="center" class="student-div">
             <el-col :xs="24" :sm="24" :lg="3">
-              <!--              <el-form-item>-->
+              &lt;!&ndash;              <el-form-item>&ndash;&gt;
               <img :src="stuHeadImg" height="80" alt="">
-              <!--              </el-form-item>-->
+              &lt;!&ndash;              </el-form-item>&ndash;&gt;
             </el-col>
             <el-col :xs="24" :sm="24" :lg="3">
-              <!--              <el-form-item class="stu-form-item">-->
+              &lt;!&ndash;              <el-form-item class="stu-form-item">&ndash;&gt;
               <span>{{ studentName }}</span>
-              <!--              </el-form-item>-->
+              &lt;!&ndash;              </el-form-item>&ndash;&gt;
             </el-col>
             <el-col :xs="24" :sm="24" :lg="6">
-              <!--              <el-form-item label="模式" class="stu-form-item">-->
+              &lt;!&ndash;              <el-form-item label="模式" class="stu-form-item">&ndash;&gt;
               <span style="font-size: 14px;">模式：</span>
               <el-radio v-model="initStudent.studyType" label="TRAINING">学习培训</el-radio>
               <el-radio v-model="initStudent.studyType" label="EXAMINATION" v-show="showExamination">考试</el-radio>
-              <!--              </el-form-item>-->
+              &lt;!&ndash;              </el-form-item>&ndash;&gt;
             </el-col>
             <el-col :xs="24" :sm="24" :lg="6">
-              <!--              <el-form-item label="座位号" style="width: 266px" class="stu-form-item">-->
+              &lt;!&ndash;              <el-form-item label="座位号" style="width: 266px" class="stu-form-item">&ndash;&gt;
               <span style="font-size: 14px;">座位号：</span>
               <el-select v-model="initStudent.classroomDeviceId" placeholder="请选择">
                 <el-option
@@ -40,36 +40,77 @@
                   :label="item.classroomDeviceName"
                   :value="item.classroomDeviceId"/>
               </el-select>
-              <!--              </el-form-item>-->
+              &lt;!&ndash;              </el-form-item>&ndash;&gt;
             </el-col>
             <el-col :xs="24" :sm="24" :lg="6">
-              <!--              <el-form-item class="stu-form-item">-->
-              <el-button type="primary" @click="stuDistribute">上机</el-button>
+              &lt;!&ndash;              <el-form-item class="stu-form-item">&ndash;&gt;
+&lt;!&ndash;              <el-button type="primary" @click="stuDistribute">上机</el-button>&ndash;&gt;
               <el-button type="primary" @click="getFaceInfo">获取未上机学生</el-button>
-              <!--              </el-form-item>-->
+              &lt;!&ndash;              </el-form-item>&ndash;&gt;
             </el-col>
           </el-row>
         </el-form>
-      </div>
+      </div>-->
       <div class="device-div">
-        <div class="title-div">iPad设备</div>
-        <el-row :gutter="23">
-          <el-col :xs="8" :sm="8" :lg="5" v-for="deviceInfo in deviceInfoList" class="device-list-col">
-            <div style="display: inline; width: 45%;">
-              <span>
-              <el-avatar size="small" :src="stuImg" v-if="deviceInfo.classroomStudentOnline===1"></el-avatar>
+        <el-table ref="table" :data="deviceInfoList" style="width: 100%;">
+          <el-table-column :show-overflow-tooltip="true" prop="classroomName" label="学生头像">
+            <template slot-scope="scope">
+              <el-avatar size="small" :src="scope.row.onlineStudentImage" v-if="scope.row.classroomStudentOnline===1"></el-avatar>
               <el-avatar size="small" icon="el-icon-user-solid" v-else></el-avatar>
-            </span>
-              <span style="color: #2fe90e;" v-if="deviceInfo.classroomDeviceStatus===1">{{
-                  deviceInfo.classroomDeviceName
-                }}
-            </span>
-              <span style="color: #8A9495;" v-else>{{ deviceInfo.classroomDeviceName }}</span>
-            </div>
-            <el-button size="mini" @click="delClassroomDevice(deviceInfo.id)">删除</el-button>
-            <el-button size="mini" @click="stuLogoutDistribute(deviceInfo.classroomDeviceId)">下机</el-button>
-          </el-col>
-        </el-row>
+            </template>
+          </el-table-column>
+          <el-table-column :show-overflow-tooltip="true" prop="onlineStudentName" label="学生姓名"/>
+          <el-table-column :show-overflow-tooltip="true" prop="classroomDeviceName" label="设备名称">
+            <template slot-scope="scope">
+              <span style="color: #2fe90e;" v-if="scope.row.classroomDeviceStatus===1">{{scope.row.classroomDeviceName }}</span>
+              <span style="color: #8A9495;" v-else>{{ scope.row.classroomDeviceName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column :show-overflow-tooltip="true" prop="classroomDeviceTypeName" label="设备类型"/>
+          <el-table-column
+            label="操作"
+            width="160"
+            align="center"
+            fixed="right">
+            <template slot-scope="scope">
+              <el-row :gutter="23">
+                <el-col :span="10">
+                  <el-button size="mini" @click="delClassroomDevice(scope.row.id)">删除</el-button>
+                </el-col>
+                <el-col :span="10">
+                  <el-button size="mini" @click="stuLogoutDistribute(scope.row.classroomDeviceId)">下机</el-button>
+                </el-col>
+              </el-row>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <!--        <div class="title-div">iPad设备</div>
+                <el-row :gutter="23">
+                  <el-col :xs="24" :sm="24" :lg="23" v-for="deviceInfo in deviceInfoList" class="device-list-col">
+                    <div class="col-div">
+                      <el-row>
+                        <el-col :xs="24" :sm="24" :lg="2">
+                          <el-avatar size="small" :src="deviceInfo.onlineStudentImage" v-if="deviceInfo.classroomStudentOnline===1"></el-avatar>
+                          <el-avatar size="small" icon="el-icon-user-solid" v-else></el-avatar>
+                        </el-col>
+                        <el-col :xs="24" :sm="24" :lg="7">
+                          学生姓名：{{deviceInfo.onlineStudentName}}
+                        </el-col>
+                        <el-col :xs="24" :sm="24" :lg="7">
+                          设备名称：
+                          <span style="color: #2fe90e;" v-if="deviceInfo.classroomDeviceStatus===1">{{deviceInfo.classroomDeviceName }}</span>
+                          <span style="color: #8A9495;" v-else>{{ deviceInfo.classroomDeviceName }}</span>
+                        </el-col>
+                        <el-col :xs="24" :sm="24" :lg="7">
+                          设备类型：{{ deviceInfo.classroomDeviceTypeName }}
+                        </el-col>
+                      </el-row>
+                    </div>
+                    <el-button size="mini" @click="delClassroomDevice(deviceInfo.id)">删除</el-button>
+                    <el-button size="mini" @click="stuLogoutDistribute(deviceInfo.classroomDeviceId)">下机</el-button>
+                  </el-col>
+                </el-row>-->
       </div>
     </el-dialog>
 
@@ -78,19 +119,19 @@
                :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="520px">
       <el-form class="dialog-form" ref="form" :model="form" size="small" label-position="left" label-width="90px">
         <el-form-item label="教室名称" prop="classroomName">
-          <el-input v-model="form.classroomName"/>
+          <el-input v-model="form.classroomName" class="form-put"/>
         </el-form-item>
-        <el-form-item label="教室类型" prop="classroomType">
-          <el-select v-model="form.classroomType" placeholder="请选择">
-            <el-option
-              v-for="item in classroomTypeList"
-              :key="item.type"
-              :label="item.desc"
-              :value="item.type"/>
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item label="教室类型" prop="classroomType">-->
+<!--          <el-select v-model="form.classroomType" placeholder="请选择">-->
+<!--            <el-option-->
+<!--              v-for="item in classroomTypeList"-->
+<!--              :key="item.type"-->
+<!--              :label="item.desc"-->
+<!--              :value="item.type"/>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
         <el-form-item label="扫脸设备ID" prop="classroomFaceId">
-          <el-input v-model="form.classroomFaceId"/>
+          <el-input v-model="form.classroomFaceId" class="form-put"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -113,7 +154,7 @@
           </a>
         </template>
       </el-table-column>
-      <el-table-column :show-overflow-tooltip="true" prop="classroomType" label="教室类型"/>
+<!--      <el-table-column :show-overflow-tooltip="true" prop="classroomType" label="教室类型"/>-->
       <el-table-column :show-overflow-tooltip="true" prop="classroomFaceId" label="教室扫脸设备ID"/>
       <el-table-column :show-overflow-tooltip="true" prop="classroomStatus" label="教室状态">
         <template slot-scope="scope">
@@ -152,7 +193,7 @@
 </template>
 
 <script>
-import crudClassrooms, {getClassRoomStu} from '@/api/trainSchool/classrooms'
+import crudClassrooms from '@/api/trainSchool/classrooms'
 import CRUD, {presenter, header, form, crud} from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
@@ -167,7 +208,7 @@ import noImg from '@/assets/images/noData.webp'
 const defaultForm = {
   id: null,
   classroomName: null,
-  classroomType: 'LISTEN',
+  // classroomType: 'LISTEN',
   classroomFaceId: null,
   classroomStatus: 0
 }
@@ -191,10 +232,10 @@ export default {
         add: ['admin', 'classroom:add'],
         del: ['admin', 'classroom:delete']
       },
-      classroomTypeList: [
-        {type: 'LISTEN', desc: '听力教室'},
-        {type: 'LISTEN_SPEAK', desc: '听说教室'}
-      ],
+      // classroomTypeList: [
+      //   {type: 'LISTEN', desc: '听力教室'},
+      //   {type: 'LISTEN_SPEAK', desc: '听说教室'}
+      // ],
       stuImg: StuImg,
       dialogDevice: false,
       deviceInfoList: [],
@@ -208,7 +249,7 @@ export default {
       classroomId: null,
       stuHeadImg: noImg,
       studentName: '陌生人',
-      showExamination: false,
+      // showExamination: false,
     }
   },
   created() {
@@ -233,13 +274,13 @@ export default {
       }
     },
     deviceOpenPage(data) {
-      if (data.classroomType === 'LISTEN_SPEAK') {
-        this.showExamination = true
-      }
+      // if (data.classroomType === 'LISTEN_SPEAK') {
+      //   this.showExamination = true
+      // }
       this.classroomName = data.classroomName
       this.classroomId = data.id
       this.initStudent.classroomFaceId = data.classroomFaceId
-      this.getFaceInfo();
+      // this.getFaceInfo();
       this.getClassroomDevice()
       this.dialogDevice = true
     },
@@ -276,35 +317,35 @@ export default {
         }
       })
     },
-    getFaceInfo() {
-      crudClassrooms.getClassRoomStu(this.classroomId).then(res => {
-        if (res.content !== null && res.content.length !== 0) {
-          const stuInfo = res.content[0]
-          this.studentName = stuInfo.studentName
-          this.stuHeadImg = stuInfo.studentImage
-          this.initStudent.studentId = stuInfo.studentId
-        } else {
-          this.$notify({
-            title: '没有获取未上机学生，请稍后再试',
-            type: 'warning',
-            duration: 1500
-          })
-        }
-      })
-    },
-    stuDistribute() {
-      crudClassrooms.stuDistribute(this.initStudent).then(res => {
-        if (res.code === '0000') {
-          this.getClassroomDevice();
-        } else {
-          this.$notify({
-            title: '分配设备失败',
-            type: 'warning',
-            duration: 1500
-          })
-        }
-      })
-    },
+    // getFaceInfo() {
+    //   crudClassrooms.getClassRoomStu(this.classroomId).then(res => {
+    //     if (res.content !== null && res.content.length !== 0) {
+    //       const stuInfo = res.content[0]
+    //       this.studentName = stuInfo.studentName
+    //       this.stuHeadImg = stuInfo.studentImage
+    //       this.initStudent.studentId = stuInfo.studentId
+    //     } else {
+    //       this.$notify({
+    //         title: '没有获取未上机学生，请稍后再试',
+    //         type: 'warning',
+    //         duration: 1500
+    //       })
+    //     }
+    //   })
+    // },
+    // stuDistribute() {
+    //   crudClassrooms.stuDistribute(this.initStudent).then(res => {
+    //     if (res.code === '0000') {
+    //       this.getClassroomDevice();
+    //     } else {
+    //       this.$notify({
+    //         title: '分配设备失败',
+    //         type: 'warning',
+    //         duration: 1500
+    //       })
+    //     }
+    //   })
+    // },
     stuLogoutDistribute(classroomDeviceId) {
       const logoutData = {
         "classroomDeviceId": classroomDeviceId
@@ -362,16 +403,12 @@ export default {
 .dialog-form {
   margin: 0 2vh;
 
-  .el-input-number {
-    width: 36vh
+  .form-put {
+    width: 80%;
   }
 
-  .el-input {
-    width: 36vh
-  }
-
-  .el-select {
-    width: 36vh
+  .form-put input {
+    text-align: left;
   }
 
   a {
@@ -382,10 +419,6 @@ export default {
     font-weight: 400;
   }
 
-  .input-textarea {
-    background: #F2F2F2;
-    border-radius: 4px;
-  }
 }
 
 
@@ -424,10 +457,16 @@ export default {
     font-size: 16px;
     letter-spacing: 0;
     font-weight: 400;
-    margin: 0 20px 20px 20px;
+    margin: 0 0 20px 20px;
     display: flex;
     justify-content: center;
     align-items: center;
+    .col-div{
+      display: inline;
+      width: 80%;
+
+    }
+
   }
 
 }

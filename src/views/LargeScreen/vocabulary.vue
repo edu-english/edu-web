@@ -4,14 +4,14 @@
       <el-col :xs="24" :sm="24" :lg="8">
         <div class="card-panel-title">
           <span>{{ this.title1.title }}</span>
-          <!--          <el-button-->
-          <!--            class="filter-item"-->
-          <!--            size="mini"-->
-          <!--            type="primary"-->
-          <!--            icon="el-icon-search"-->
-          <!--            v-if="showStatistics"-->
-          <!--            @click="getCount()">查询-->
-          <!--          </el-button>-->
+            <el-button
+              class="filter-item"
+              size="mini"
+              type="primary"
+              icon="el-icon-search"
+              v-if="showStatistics"
+              @click="getCount(title1.title)">查询
+            </el-button>
         </div>
         <div class="chart-col">
           <!--          <div class="chart-title">-->
@@ -26,13 +26,13 @@
       <el-col :xs="24" :sm="24" :lg="8" v-if="showStatistics">
         <div class="card-panel-title">
           <span>{{ this.title2.title }}</span>
-<!--          <el-button-->
-<!--            class="filter-item"-->
-<!--            size="mini"-->
-<!--            type="primary"-->
-<!--            icon="el-icon-search"-->
-<!--            @click="getCount()">查询-->
-<!--          </el-button>-->
+          <el-button
+            class="filter-item"
+            size="mini"
+            type="primary"
+            icon="el-icon-search"
+            @click="getCount(title2.title)">查询
+          </el-button>
         </div>
         <div class="chart-col">
           <!--          <div class="chart-title">-->
@@ -47,13 +47,13 @@
       <el-col :xs="24" :sm="24" :lg="8" v-if="showStatistics">
         <div class="card-panel-title">
           <span>{{ this.title3.title }}</span>
-<!--          <el-button-->
-<!--            class="filter-item"-->
-<!--            size="mini"-->
-<!--            type="primary"-->
-<!--            icon="el-icon-search"-->
-<!--            @click="getCount()">查询-->
-<!--          </el-button>-->
+          <el-button
+            class="filter-item"
+            size="mini"
+            type="primary"
+            icon="el-icon-search"
+            @click="getCount(title3.title)">查询
+          </el-button>
         </div>
         <div class="chart-col">
           <!--          <div class="chart-title">-->
@@ -66,7 +66,7 @@
         </div>
       </el-col>
       <el-col :span="16" v-else="showStatistics">
-        <Vocabulary-detail @send="childCancel"/>
+        <Vocabulary-detail @send="childCancel" :eduLevel="eduLevel"/>
       </el-col>
     </el-row>
   </div>
@@ -98,29 +98,46 @@ export default {
       },
       showStatistics: true,
       loading: false,
+      eduLevel:null,
     }
   },
   mounted() {
     this.init()
-    // this.intervalId = setInterval(this.init, 5000 * 600); // 秒 刷新一次
   },
   methods: {
     init() {
       Vocabulary.getDataWord().then(res => {
         if (res.content !== null) {
           if (res.content.xiaoxue !== undefined) {
-            Vocabulary.chart_1(res.content.xiaoxue)
+            this.title1.resContent=res.content.xiaoxue
+            Vocabulary.chart_1(this.title1.resContent)
           }
           if (res.content.chuzhong !== undefined) {
-            Vocabulary.chart_2(res.content.chuzhong)
+            this.title2.resContent=res.content.chuzhong
+            Vocabulary.chart_2(this.title2.resContent)
           }
           if (res.content.gaozhong !== undefined) {
-            Vocabulary.chart_3(res.content.gaozhong)
+            this.title3.resContent=res.content.gaozhong
+            Vocabulary.chart_3(this.title3.resContent)
           }
         }
       })
     },
-    getCount() {
+    getCount(val) {
+      if (val==='小学') {
+        this.eduLevel=this.title1.title
+        Vocabulary.chart_1(this.title1.resContent)
+      }
+      if (val==='初中') {
+        this.eduLevel=this.title2.title
+        this.title1.title=this.title2.title
+        Vocabulary.chart_1(this.title2.resContent)
+      }
+      if (val==='高中') {
+        this.eduLevel=this.title3.title
+        this.title1.title=this.title3.title
+        Vocabulary.chart_1(this.title3.resContent)
+      }
       this.showStatistics = false
     },
     childCancel() {

@@ -4,14 +4,14 @@
       <el-col :xs="24" :sm="24" :lg="8">
         <div class="card-panel-title">
           <span>{{ this.title1.eduLevel }}</span>
-<!--          <el-button-->
-<!--            class="filter-item"-->
-<!--            size="mini"-->
-<!--            type="primary"-->
-<!--            icon="el-icon-search"-->
-<!--            v-if="showStatistics"-->
-<!--            @click="getCount()">查询-->
-<!--          </el-button>-->
+          <el-button
+            class="filter-item"
+            size="mini"
+            type="primary"
+            icon="el-icon-search"
+            v-if="showStatistics"
+            @click="getCount('小学')">查询
+          </el-button>
         </div>
         <div class="card-col">
 <!--          <div class="card-title">-->
@@ -43,18 +43,17 @@
             </div>
           </div>
         </div>
-
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8" v-if="showStatistics">
         <div class="card-panel-title">
           <span>{{ this.title2.eduLevel }}</span>
-<!--          <el-button-->
-<!--            class="filter-item"-->
-<!--            size="mini"-->
-<!--            type="primary"-->
-<!--            icon="el-icon-search"-->
-<!--            @click="getCount()">查询-->
-<!--          </el-button>-->
+          <el-button
+            class="filter-item"
+            size="mini"
+            type="primary"
+            icon="el-icon-search"
+            @click="getCount('初中')">查询
+          </el-button>
         </div>
         <div class="card-col">
 <!--          <div class="card-title">-->
@@ -90,13 +89,13 @@
       <el-col :xs="24" :sm="24" :lg="8" v-if="showStatistics">
         <div class="card-panel-title">
           <span>{{ this.title3.eduLevel }}</span>
-<!--          <el-button-->
-<!--            class="filter-item"-->
-<!--            size="mini"-->
-<!--            type="primary"-->
-<!--            icon="el-icon-search"-->
-<!--            @click="getCount()">查询-->
-<!--          </el-button>-->
+          <el-button
+            class="filter-item"
+            size="mini"
+            type="primary"
+            icon="el-icon-search"
+            @click="getCount('高中')">查询
+          </el-button>
         </div>
         <div class="card-col">
 <!--          <div class="card-title">-->
@@ -130,7 +129,7 @@
         </div>
       </el-col>
       <el-col :span="16" v-else="showStatistics">
-        <Level-Test-Detail @send="childCancel"/>
+        <Level-Test-Detail @send="childCancel" :eduLevel="eduLevel"/>
       </el-col>
     </el-row>
   </div>
@@ -140,6 +139,7 @@
 
 import LevelTest from '@/api/LargeScreen/level-test'
 import LevelTestDetail from './level-test-detail'
+import Vocabulary from "@/api/LargeScreen/vocabulary";
 
 export default {
   name: 'LargeScreen-level-test',
@@ -169,6 +169,7 @@ export default {
         },
       showStatistics: true,
       loading: false,
+      eduLevel:null
     }
   },
   mounted() {
@@ -190,7 +191,14 @@ export default {
         }
       })
     },
-    getCount() {
+    getCount(val) {
+      if (val==='初中') {
+        this.title1=this.title2
+      }
+      if (val==='高中') {
+        this.title1=this.title3
+      }
+      this.eduLevel=this.title1.eduLevel
       this.showStatistics = false
     },
     childCancel() {

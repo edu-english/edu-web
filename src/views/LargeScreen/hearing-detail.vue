@@ -8,78 +8,75 @@
         type="primary"
         @click="cancel()">取消
       </el-button>
-      <el-input type="text" placeholder="请输入内容" v-model="query.blurry"></el-input>
-      <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="searchClick">搜索
-      </el-button>
+      <div style="margin-top: 20px">
+        <el-select v-model="query" filterable placeholder="请选择">
+          <el-option
+            v-for="item in studentInfoList"
+            :key="item.id"
+            :label="item.studentName"
+            :value="item.id"/>
+        </el-select>
+        <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="searchClick">搜索
+        </el-button>
+      </div>
     </div>
-    <div class="detail-info">
+    <div class="detail-info" v-show="showDetail">
       <div class="detail-info-title">
-        {{ title1.title_detail.title }}<span style="padding: 0 10px">|</span>{{ title1.title_detail.level }}
+        {{ listenDetail.grade }}<span style="padding: 0 10px">|</span>Level{{ listenDetail.level }}
       </div>
       <div class="detail-info-row">
         <el-row>
-          <el-col :span="8">
-            <span>报名时间</span> 2024-02-01
+          <el-col :span="12">
+            <span>报名时间：</span> {{ listenDetail.createTime }}
           </el-col>
-          <el-col :span="8">
-            <span>学习课时</span> 10
-          </el-col>
-          <el-col :span="8">
-            <span>口语真人互动次数</span> 10
+          <el-col :span="12">
+            <span>听题数：</span> {{ listenDetail.listenCount }}
           </el-col>
         </el-row>
       </div>
     </div>
-    <div class="detail-table">
-      <el-table ref="table" v-loading="loading" :data="detailInfos"
-                :cell-style="cellStyle"
-                :header-cell-style="headerRowStyle"
-                border style="width: 100%;">
-        <el-table-column :show-overflow-tooltip="true" prop="createTime" label="时间" />
-        <el-table-column :show-overflow-tooltip="true" prop="readCount" label="听力分数" />
-      </el-table>
-    </div>
+    <!--    <div class="detail-table">
+          <el-table ref="table" v-loading="loading" :data="detailInfos"
+                    :cell-style="cellStyle"
+                    :header-cell-style="headerRowStyle"
+                    border style="width: 100%;">
+            <el-table-column :show-overflow-tooltip="true" prop="createTime" label="时间" />
+            <el-table-column :show-overflow-tooltip="true" prop="readCount" label="听力分数" />
+          </el-table>
+        </div>-->
   </div>
 </template>
 
 <script>
 
+import levelTest from "@/api/LargeScreen/level-test";
+import crudScore from "@/api/trainSchool/score";
+
 export default {
+  props: {
+    eduLevel: {
+      type: String,
+      require: false
+    }
+  },
   data() {
     return {
-      title1: {
-        "title": "小学",
-        "childTitle": "杭州第一小学 · 三年级2班",
-        "learnCount": 10,
-        "title_detail": {
-          "title": "小学",
-          "level": "Level1",
-          "learnCount": 5,
-          "learnCount1": 5,
-          "resContent": [
-            {
-              "title": "x",
-              "total": 1100,
-              "learnCount": 600
-            },
-            {
-              "title": "k",
-              "total": 1100,
-              "learnCount": 500
-            }
-          ]
-        },
+      listenDetail: {
+        createTime: null,
+        level: null,
+        grade: null,
+        listenCount: null
       },
-      query: {
-        blurry: ""
-      },
+      query: null,
       detailInfos: [
         {createTime: "2024-06-03", readCount: 90},
         {createTime: "2024-06-02", readCount: 20},
         {createTime: "2024-06-01", readCount: 41},
         {createTime: "2024-05-31", readCount: 78}
       ],
-      loading:false
+      loading: false,
+      studentInfoList: [],
+      showDetail: false,
     }
   },
   mounted() {
@@ -87,18 +84,23 @@ export default {
   },
   methods: {
     init() {
-      console.log("阅读理解数据===")
+      crudScore.getStudentInfoList(this.eduLevel).then(res => {
+        this.studentInfoList = res.content
+      })
     },
     searchClick() {
-      console.log("搜索=====")
+      levelTest.getLargeInfo(this.query, 'listen', '', '').then(res => {
+        this.listenDetail = res.content
+        this.showDetail = true
+      })
     },
     cancel() {
       this.$emit('send')
     },
-    headerRowStyle(){
+    headerRowStyle() {
       return 'background: #D8D8D8; font-size: 18px; color: #000000'
     },
-    cellStyle(){
+    cellStyle() {
       return 'background: #F2F2F2; font-size: 14px; color: #000000'
     }
   }
@@ -108,7 +110,7 @@ export default {
 <style lang="scss" scoped>
 
 .detail-container {
-  height: 75.9vh;
+  height: 65.8vh;
   background: #fff;
   padding: 3% 2.1% 8.2% 2.1%;
 
@@ -129,31 +131,30 @@ export default {
       letter-spacing: 0;
       font-weight: 400;
     }
-    .el-input {
-      margin-top: 20px;
-      width: 300px;
-    }
   }
 
   .detail-info {
     height: 12vh;
     background: #fff;
     margin-top: 30px;
+
     .detail-info-title {
+      margin-top: 80px;
       height: 55px;
       font-size: 20px;
       color: #000000;
       letter-spacing: 0;
       font-weight: 500;
     }
+
     .detail-info-row {
-      margin-top: 20px;
+      margin-top: 80px;
       font-size: 20px;
       color: #000000;
       letter-spacing: 0;
       font-weight: 500;
 
-      span{
+      span {
         padding-right: 20px;
         color: #8A9495;
       }
