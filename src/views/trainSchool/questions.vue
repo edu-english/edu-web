@@ -22,7 +22,7 @@
     <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU"
                :visible.sync="crud.status.cu > 0"
                v-loading="loading" element-loading-text="文件上传中"
-               :title="crud.status.title" width="520px">
+               :title="crud.status.title" width="600px">
       <el-form class="dialog-form" ref="form" :model="form" size="small" label-position="left" label-width="90px">
         <el-form-item label="题类型" prop="questionType">
           <el-select v-model="form.questionType" placeholder="请选择" @change="questionsChange(form.questionType)" class="form-put">
@@ -46,7 +46,8 @@
           <el-input v-model="form.gradeClass" class="form-put"/>
         </el-form-item>
         <el-form-item label="题内容" prop="questionTitle">
-          <el-input v-model="form.questionTitle" class="form-put"/>
+<!--          <el-input v-model="form.questionTitle" class="form-put"/>-->
+          <el-input v-model="form.questionTitle" rows="5" type="textarea" class="form-put"/>
         </el-form-item>
         <el-form-item label="题内容文件" prop="questionTitleFile">
           <el-upload
@@ -209,7 +210,7 @@
 
     <el-dialog append-to-body :visible.sync="childDialog" v-loading="loading" element-loading-text="文件上传中"
                :title="childTitle"
-               width="520px">
+               width="600px">
       <el-form class="dialog-form" ref="form" :model="childForm" size="small" label-position="left" label-width="90px">
         <el-form-item label="题类型" prop="questionType">
           <el-select v-model="childForm.questionType" placeholder="请选择"
@@ -234,7 +235,8 @@
           <el-input v-model="childForm.gradeClass" class="form-put"/>
         </el-form-item>
         <el-form-item label="题内容" prop="questionTitle">
-          <el-input v-model="childForm.questionTitle" class="form-put"/>
+<!--          <el-input v-model="childForm.questionTitle" class="form-put"/>-->
+          <el-input v-model="childForm.questionTitle" rows="5" type="textarea" class="form-put"/>
         </el-form-item>
         <el-form-item label="题内容文件" prop="questionTitleFile">
           <el-upload
@@ -779,7 +781,7 @@ export default {
   margin: 0 2vh;
 
   .form-put {
-    width: 80%;
+    width: 400px;
   }
 
   .form-put input {

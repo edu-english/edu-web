@@ -19,7 +19,7 @@
     </div>
     <!--表单渲染-->
     <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU"
-               :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="570px">
+               :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="600px">
       <el-form ref="form" :model="form" size="small" label-width="100px" class="score-form">
         <el-form-item label="学生类型" prop="eduLevel">
           <el-select v-model="form.eduLevel" placeholder="请选择" class="form-put">
@@ -234,7 +234,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss">
 .score-form {
   .form-put {
-    width: 80%;
+    width: 400px;
   }
 
   .form-put input {

@@ -30,6 +30,19 @@
             <!--表格渲染-->
             <el-table ref="table" :data="detailData" style="width: 100%;" class="tab-table">
               <el-table-column :show-overflow-tooltip="true" prop="detailType" label="详情类型"/>
+              <el-table-column :show-overflow-tooltip="true" prop="studyStatus" label="学习状态">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.studyStatus==='0'">
+                    未作答
+                  </span>
+                  <span v-if="scope.row.studyStatus==='1'" style="color: red">
+                    错误
+                  </span>
+                  <span v-if="scope.row.studyStatus==='2'" style="color: #0aef15">
+                    正确
+                  </span>
+                </template>
+              </el-table-column>
               <el-table-column :show-overflow-tooltip="true" prop="content" label="内容">
                 <!--                <template slot-scope="scope">-->
                 <!--                  <a @click="handleStudySchedule(scope.row)" style="color: #1884FF; font-size: 14px">查看</a>-->

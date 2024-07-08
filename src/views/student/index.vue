@@ -29,20 +29,20 @@
     </div>
     <!--新增学生表单渲染-->
     <el-dialog append-to-body :close-on-click-modal="false" :visible.sync="addStudentDialog"
-               title="学生信息" width="520px" @close="closeForm">
+               title="学生信息" width="600px" @close="closeForm">
       <el-form ref="form" class="dialog-form" :model="initStudent" :rules="rules" size="small" label-position="left"
                label-width="90px">
         <el-form-item label="学生头像" v-show="stuImg">
           <img :src="initStudent.headImg" width="100" height="100" alt="学生头像">
         </el-form-item>
         <el-form-item label="学生账号" prop="account">
-          <el-input v-model="initStudent.account"/>
+          <el-input v-model="initStudent.account" class="form-put"/>
         </el-form-item>
         <el-form-item label="姓名" prop="studentName">
-          <el-input v-model="initStudent.studentName"/>
+          <el-input v-model="initStudent.studentName" class="form-put"/>
         </el-form-item>
         <el-form-item label="年级" prop="grade">
-          <el-select v-model="initStudent.grade" placeholder="请选择">
+          <el-select v-model="initStudent.grade" placeholder="请选择" class="form-put">
             <el-option
               v-for="item in eduLevelList"
               :key="item"
@@ -51,17 +51,17 @@
           </el-select>
         </el-form-item>
         <el-form-item label="班级" prop="gradeClass">
-          <el-input v-model="initStudent.gradeClass"/>
+          <el-input v-model="initStudent.gradeClass" class="form-put"/>
         </el-form-item>
         <el-form-item label="父母姓名" prop="parentName">
-          <el-input v-model="initStudent.parentName"/>
+          <el-input v-model="initStudent.parentName" class="form-put"/>
         </el-form-item>
         <el-form-item label="手机号" prop="phone">
-          <el-input v-model="initStudent.phone"/>
+          <el-input v-model="initStudent.phone" class="form-put"/>
         </el-form-item>
         <el-form-item label="英语等级" prop="englishLevel">
           <el-input-number v-model="initStudent.englishLevel" controls-position="right" size="large" :min="1"
-                           :max="10"/>
+                           :max="10" class="form-put"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -321,20 +321,12 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss">
 .dialog-form {
-  .el-input-number .el-input__inner {
+  .form-put input {
     text-align: left;
   }
 
-  .el-input-number {
-    width: 36vh
-  }
-
-  .el-input {
-    width: 36vh
-  }
-
-  .el-select {
-    width: 36vh
+  .form-put {
+    width: 400px;
   }
 }
 

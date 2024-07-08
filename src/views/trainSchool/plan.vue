@@ -516,7 +516,7 @@ export default {
   margin: 0 2vh;
 
   .form-put {
-    width: 80%;
+    width: 400px;
   }
 
   .form-put input {
@@ -539,7 +539,7 @@ export default {
     .input-textarea {
       background: #F2F2F2;
       border-radius: 4px;
-      width: 80%
+      width: 400px
     }
   }
 
