@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-editor-container">
-      <Vocabulary/>
+      <Vocabulary v-show="shouPage"/>
     </div>
   </div>
 </template>
@@ -10,7 +10,6 @@
 
 import Vocabulary from '@/views/LargeScreen/vocabulary'
 
-
 export default {
   name: 'Dashboard',
   components: {
@@ -18,12 +17,17 @@ export default {
   },
   data() {
     return {
-
+      shouPage: true
     }
   },
-  methods: {
-
-  }
+  mounted() {
+    if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {
+      this.shouPage = false
+      this.$router.push({path: '/phone/classroom'})
+    } else {
+      this.shouPage = true
+    }
+  },
 }
 </script>
 
@@ -31,6 +35,7 @@ export default {
 .dashboard-editor-container {
   height: 91.1vh;
   background-color: rgb(240, 242, 245);
+
   .chart-wrapper {
     background: #fff;
     padding: 16px 16px 0;

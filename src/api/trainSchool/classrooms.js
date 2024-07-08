@@ -52,6 +52,14 @@ export function stuLogoutDistribute(data) {
   })
 }
 
+export function stusLogoutDistribute(data) {
+  return request({
+    url: '/api/classrooms/logout',
+    method: 'post',
+    data
+  })
+}
+
 //教室学生列表-未上机
 export function getClassRoomStu(classroomId) {
   return request({
@@ -76,6 +84,7 @@ export default {
   delClassroomDevice,
   stuDistribute,
   stuLogoutDistribute,
+  stusLogoutDistribute,
   getClassRoomStu,
   classroomSyncStu
 }

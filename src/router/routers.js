@@ -57,7 +57,14 @@ export const constantRouterMap = [
         meta: { title: '个人中心' }
       }
     ]
-  }
+  },
+  {
+    path: '/phone/classroom',
+    meta: { title: '教室管理', noCache: true },
+    component: (resolve) => require(['@/views/phone/classrooms'], resolve),
+    hidden: true
+  },
+
 ]
 
 export default new Router({

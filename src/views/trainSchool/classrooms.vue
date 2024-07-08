@@ -10,59 +10,65 @@
       width="70%"
       :before-close="handleClose">
       <div class="title-div">{{ classroomName }}</div>
-<!--      <div>
-        <el-form :inline="true" :model="initStudent">
-          <el-row :gutter="23" type="flex" justify="center" class="student-div">
-            <el-col :xs="24" :sm="24" :lg="3">
-              &lt;!&ndash;              <el-form-item>&ndash;&gt;
-              <img :src="stuHeadImg" height="80" alt="">
-              &lt;!&ndash;              </el-form-item>&ndash;&gt;
-            </el-col>
-            <el-col :xs="24" :sm="24" :lg="3">
-              &lt;!&ndash;              <el-form-item class="stu-form-item">&ndash;&gt;
-              <span>{{ studentName }}</span>
-              &lt;!&ndash;              </el-form-item>&ndash;&gt;
-            </el-col>
-            <el-col :xs="24" :sm="24" :lg="6">
-              &lt;!&ndash;              <el-form-item label="模式" class="stu-form-item">&ndash;&gt;
-              <span style="font-size: 14px;">模式：</span>
-              <el-radio v-model="initStudent.studyType" label="TRAINING">学习培训</el-radio>
-              <el-radio v-model="initStudent.studyType" label="EXAMINATION" v-show="showExamination">考试</el-radio>
-              &lt;!&ndash;              </el-form-item>&ndash;&gt;
-            </el-col>
-            <el-col :xs="24" :sm="24" :lg="6">
-              &lt;!&ndash;              <el-form-item label="座位号" style="width: 266px" class="stu-form-item">&ndash;&gt;
-              <span style="font-size: 14px;">座位号：</span>
-              <el-select v-model="initStudent.classroomDeviceId" placeholder="请选择">
-                <el-option
-                  v-for="item in deviceInfoList"
-                  :key="item.classroomDeviceId"
-                  :label="item.classroomDeviceName"
-                  :value="item.classroomDeviceId"/>
-              </el-select>
-              &lt;!&ndash;              </el-form-item>&ndash;&gt;
-            </el-col>
-            <el-col :xs="24" :sm="24" :lg="6">
-              &lt;!&ndash;              <el-form-item class="stu-form-item">&ndash;&gt;
-&lt;!&ndash;              <el-button type="primary" @click="stuDistribute">上机</el-button>&ndash;&gt;
-              <el-button type="primary" @click="getFaceInfo">获取未上机学生</el-button>
-              &lt;!&ndash;              </el-form-item>&ndash;&gt;
-            </el-col>
-          </el-row>
-        </el-form>
-      </div>-->
+      <!--      <div>
+              <el-form :inline="true" :model="initStudent">
+                <el-row :gutter="23" type="flex" justify="center" class="student-div">
+                  <el-col :xs="24" :sm="24" :lg="3">
+                    &lt;!&ndash;              <el-form-item>&ndash;&gt;
+                    <img :src="stuHeadImg" height="80" alt="">
+                    &lt;!&ndash;              </el-form-item>&ndash;&gt;
+                  </el-col>
+                  <el-col :xs="24" :sm="24" :lg="3">
+                    &lt;!&ndash;              <el-form-item class="stu-form-item">&ndash;&gt;
+                    <span>{{ studentName }}</span>
+                    &lt;!&ndash;              </el-form-item>&ndash;&gt;
+                  </el-col>
+                  <el-col :xs="24" :sm="24" :lg="6">
+                    &lt;!&ndash;              <el-form-item label="模式" class="stu-form-item">&ndash;&gt;
+                    <span style="font-size: 14px;">模式：</span>
+                    <el-radio v-model="initStudent.studyType" label="TRAINING">学习培训</el-radio>
+                    <el-radio v-model="initStudent.studyType" label="EXAMINATION" v-show="showExamination">考试</el-radio>
+                    &lt;!&ndash;              </el-form-item>&ndash;&gt;
+                  </el-col>
+                  <el-col :xs="24" :sm="24" :lg="6">
+                    &lt;!&ndash;              <el-form-item label="座位号" style="width: 266px" class="stu-form-item">&ndash;&gt;
+                    <span style="font-size: 14px;">座位号：</span>
+                    <el-select v-model="initStudent.classroomDeviceId" placeholder="请选择">
+                      <el-option
+                        v-for="item in deviceInfoList"
+                        :key="item.classroomDeviceId"
+                        :label="item.classroomDeviceName"
+                        :value="item.classroomDeviceId"/>
+                    </el-select>
+                    &lt;!&ndash;              </el-form-item>&ndash;&gt;
+                  </el-col>
+                  <el-col :xs="24" :sm="24" :lg="6">
+                    &lt;!&ndash;              <el-form-item class="stu-form-item">&ndash;&gt;
+      &lt;!&ndash;              <el-button type="primary" @click="stuDistribute">上机</el-button>&ndash;&gt;
+                    <el-button type="primary" @click="getFaceInfo">获取未上机学生</el-button>
+                    &lt;!&ndash;              </el-form-item>&ndash;&gt;
+                  </el-col>
+                </el-row>
+              </el-form>
+            </div>-->
       <div class="device-div">
+        <div style="margin-left: 92%">
+          <el-button size="mini" type="primary" @click="stusLogoutDistribute()">一键下机</el-button>
+        </div>
         <el-table ref="table" :data="deviceInfoList" style="width: 100%;">
           <el-table-column :show-overflow-tooltip="true" prop="classroomName" label="学生头像">
             <template slot-scope="scope">
-              <el-avatar size="small" :src="scope.row.onlineStudentImage" v-if="scope.row.classroomStudentOnline===1"></el-avatar>
+              <el-avatar size="small" :src="scope.row.onlineStudentImage"
+                         v-if="scope.row.classroomStudentOnline===1"></el-avatar>
               <el-avatar size="small" icon="el-icon-user-solid" v-else></el-avatar>
             </template>
           </el-table-column>
           <el-table-column :show-overflow-tooltip="true" prop="onlineStudentName" label="学生姓名"/>
           <el-table-column :show-overflow-tooltip="true" prop="classroomDeviceName" label="设备名称">
             <template slot-scope="scope">
-              <span style="color: #2fe90e;" v-if="scope.row.classroomDeviceStatus===1">{{scope.row.classroomDeviceName }}</span>
+              <span style="color: #2fe90e;" v-if="scope.row.classroomDeviceStatus===1">{{
+                  scope.row.classroomDeviceName
+                }}</span>
               <span style="color: #8A9495;" v-else>{{ scope.row.classroomDeviceName }}</span>
             </template>
           </el-table-column>
@@ -121,15 +127,15 @@
         <el-form-item label="教室名称" prop="classroomName">
           <el-input v-model="form.classroomName" class="form-put"/>
         </el-form-item>
-<!--        <el-form-item label="教室类型" prop="classroomType">-->
-<!--          <el-select v-model="form.classroomType" placeholder="请选择">-->
-<!--            <el-option-->
-<!--              v-for="item in classroomTypeList"-->
-<!--              :key="item.type"-->
-<!--              :label="item.desc"-->
-<!--              :value="item.type"/>-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item label="教室类型" prop="classroomType">-->
+        <!--          <el-select v-model="form.classroomType" placeholder="请选择">-->
+        <!--            <el-option-->
+        <!--              v-for="item in classroomTypeList"-->
+        <!--              :key="item.type"-->
+        <!--              :label="item.desc"-->
+        <!--              :value="item.type"/>-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
         <el-form-item label="扫脸设备ID" prop="classroomFaceId">
           <el-input v-model="form.classroomFaceId" class="form-put"/>
         </el-form-item>
@@ -154,7 +160,7 @@
           </a>
         </template>
       </el-table-column>
-<!--      <el-table-column :show-overflow-tooltip="true" prop="classroomType" label="教室类型"/>-->
+      <!--      <el-table-column :show-overflow-tooltip="true" prop="classroomType" label="教室类型"/>-->
       <el-table-column :show-overflow-tooltip="true" prop="classroomFaceId" label="教室扫脸设备ID"/>
       <el-table-column :show-overflow-tooltip="true" prop="classroomStatus" label="教室状态">
         <template slot-scope="scope">
@@ -204,6 +210,7 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import StuImg from '@/assets/images/stuImg.jpeg'
 import noImg from '@/assets/images/noData.webp'
+import crudQuestions from "@/api/trainSchool/questions";
 
 const defaultForm = {
   id: null,
@@ -350,8 +357,13 @@ export default {
       const logoutData = {
         "classroomDeviceId": classroomDeviceId
       }
-      crudClassrooms.stuLogoutDistribute(logoutData).then(res=>{
+      crudClassrooms.stuLogoutDistribute(logoutData).then(res => {
         if (res.code === '0000') {
+          this.$notify({
+            title: '下机成功',
+            type: 'success',
+            duration: 1500
+          })
           this.getClassroomDevice();
         } else {
           this.$notify({
@@ -360,6 +372,34 @@ export default {
             duration: 1500
           })
         }
+      })
+    },
+    stusLogoutDistribute() {
+      this.$confirm(`确认下机当前教室的所有设备？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const logoutData = {
+          "id": this.classroomId
+        }
+        crudClassrooms.stusLogoutDistribute(logoutData).then(res => {
+          if (res.code === '0000') {
+            this.$notify({
+              title: '下机成功',
+              type: 'success',
+              duration: 1500
+            })
+            this.getClassroomDevice();
+          } else {
+            this.$notify({
+              title: '下机失败',
+              type: 'warning',
+              duration: 1500
+            })
+          }
+        })
+      }).catch(() => {
       })
     },
     classroomSyncStu(id) {
@@ -461,7 +501,8 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    .col-div{
+
+    .col-div {
       display: inline;
       width: 80%;
 

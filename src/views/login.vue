@@ -1,21 +1,24 @@
 <template>
   <div class="login" :style="'background-image:url('+ Background +');'">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left" label-width="0px" class="login-form">
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left" label-width="0px"
+             class="login-form">
       <img :src="logo" class="login-logo">
       <h3 class="title">思维定律系统</h3>
       <el-form-item prop="username">
         <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
-          <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
+          <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon"/>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="loginForm.password" type="password" auto-complete="off" placeholder="密码" @keyup.enter.native="handleLogin">
-          <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
+        <el-input v-model="loginForm.password" type="password" auto-complete="off" placeholder="密码"
+                  @keyup.enter.native="handleLogin">
+          <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon"/>
         </el-input>
       </el-form-item>
       <el-form-item prop="code">
-        <el-input v-model="loginForm.code" auto-complete="off" placeholder="验证码" style="width: 63%" @keyup.enter.native="handleLogin">
-          <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
+        <el-input v-model="loginForm.code" auto-complete="off" placeholder="验证码" style="width: 63%"
+                  @keyup.enter.native="handleLogin">
+          <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon"/>
         </el-input>
         <div class="login-code">
           <img :src="codeUrl" @click="getCode">
@@ -25,29 +28,31 @@
         记住我
       </el-checkbox>
       <el-form-item style="width:100%;">
-        <el-button :loading="loading" size="medium" type="primary" style="width:100%;" @click.native.prevent="handleLogin">
+        <el-button :loading="loading" size="medium" type="primary" style="width:100%;"
+                   @click.native.prevent="handleLogin">
           <span v-if="!loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
       </el-form-item>
     </el-form>
-<!--    &lt;!&ndash;  底部  &ndash;&gt;-->
-<!--    <div v-if="$store.state.settings.showFooter" id="el-login-footer">-->
-<!--      <span v-html="$store.state.settings.footerTxt" />-->
-<!--      <span v-if="$store.state.settings.caseNumber"> ⋅ </span>-->
-<!--      <a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank">{{ $store.state.settings.caseNumber }}</a>-->
-<!--    </div>-->
+    <!--    &lt;!&ndash;  底部  &ndash;&gt;-->
+    <!--    <div v-if="$store.state.settings.showFooter" id="el-login-footer">-->
+    <!--      <span v-html="$store.state.settings.footerTxt" />-->
+    <!--      <span v-if="$store.state.settings.caseNumber"> ⋅ </span>-->
+    <!--      <a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank">{{ $store.state.settings.caseNumber }}</a>-->
+    <!--    </div>-->
   </div>
 </template>
 
 <script>
-import { encrypt } from '@/utils/rsaEncrypt'
+import {encrypt} from '@/utils/rsaEncrypt'
 import Logo from '@/assets/images/logo.png'
 import Config from '@/settings'
-import { getCodeImg } from '@/api/login'
+import {getCodeImg} from '@/api/login'
 import Cookies from 'js-cookie'
 import qs from 'qs'
 import Background from '@/assets/images/background.jpeg'
+
 export default {
   name: 'Login',
   data() {
@@ -63,24 +68,24 @@ export default {
         uuid: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
-        password: [{ required: true, trigger: 'blur', message: '密码不能为空' }],
-        code: [{ required: true, trigger: 'change', message: '验证码不能为空' }]
+        username: [{required: true, trigger: 'blur', message: '用户名不能为空'}],
+        password: [{required: true, trigger: 'blur', message: '密码不能为空'}],
+        code: [{required: true, trigger: 'change', message: '验证码不能为空'}]
       },
       loading: false,
       redirect: undefined,
-      logo:Logo
+      logo: Logo
     }
   },
   watch: {
     $route: {
-      handler: function(route) {
+      handler: function (route) {
         const data = route.query
         if (data && data.redirect) {
           this.redirect = data.redirect
           delete data.redirect
           if (JSON.stringify(data) !== '{}') {
-            this.redirect = this.redirect + '&' + qs.stringify(data, { indices: false })
+            this.redirect = this.redirect + '&' + qs.stringify(data, {indices: false})
           }
         }
       },
@@ -98,8 +103,8 @@ export default {
   methods: {
     getCode() {
       getCodeImg().then(res => {
-        if (res.content!=null){
-          res=res.content
+        if (res.content != null) {
+          res = res.content
         }
         this.codeUrl = res.img
         this.loginForm.uuid = res.uuid
@@ -134,9 +139,9 @@ export default {
         if (valid) {
           this.loading = true
           if (user.rememberMe) {
-            Cookies.set('username', user.username, { expires: Config.passCookieExpires })
-            Cookies.set('password', user.password, { expires: Config.passCookieExpires })
-            Cookies.set('rememberMe', user.rememberMe, { expires: Config.passCookieExpires })
+            Cookies.set('username', user.username, {expires: Config.passCookieExpires})
+            Cookies.set('password', user.password, {expires: Config.passCookieExpires})
+            Cookies.set('rememberMe', user.rememberMe, {expires: Config.passCookieExpires})
           } else {
             Cookies.remove('username')
             Cookies.remove('password')
@@ -144,7 +149,11 @@ export default {
           }
           this.$store.dispatch('Login', user).then(() => {
             this.loading = false
-            this.$router.push({path: this.redirect || '/'})
+            if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)) {
+              this.$router.push({path: '/phone/classroom'})
+            } else {
+              this.$router.push({path: this.redirect || '/'})
+            }
           }).catch(err => {
             console.error(err)
             this.$message.error(err);
@@ -235,5 +244,72 @@ export default {
     cursor: pointer;
     vertical-align: middle
   }
+}
+
+/* 在屏幕宽度小于768px时应用的样式 */
+@media screen and (max-width: 768px) {
+  .login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-size: cover;
+  }
+
+  .title {
+    display: inline-block;
+    margin: 0 auto 30px auto;
+    color: #707070;
+    vertical-align: middle;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .login-logo {
+    width: 50px;
+    height: 50px;
+    vertical-align: middle;
+    margin: 0 auto 30px 20px;
+  }
+
+  .login-form {
+    border-radius: 6px;
+    background: #ffffff;
+    width: 320px;
+    padding: 25px 30px;
+
+    .el-input {
+      height: 38px;
+
+      input {
+        height: 38px;
+      }
+    }
+
+    .input-icon {
+      height: 39px;
+      width: 14px;
+      margin-left: 2px;
+    }
+  }
+
+  .login-tip {
+    font-size: 13px;
+    text-align: center;
+    color: #bfbfbf;
+  }
+
+  .login-code {
+    width: 37%;
+    display: inline-block;
+    height: 38px;
+    float: right;
+
+    img {
+      cursor: pointer;
+      vertical-align: middle
+    }
+  }
+
 }
 </style>
