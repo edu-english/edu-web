@@ -43,10 +43,27 @@
                   </span>
                 </template>
               </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" prop="content" label="内容">
-                <!--                <template slot-scope="scope">-->
-                <!--                  <a @click="handleStudySchedule(scope.row)" style="color: #1884FF; font-size: 14px">查看</a>-->
-                <!--                </template>-->
+              <el-table-column :show-overflow-tooltip="true" prop="content" label="汉译英内容"/>
+              <el-table-column :show-overflow-tooltip="true" prop="englishStatus" label="汉译英结果">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.englishStatus==='0'" style="color: red">
+                    错误
+                  </span>
+                  <span v-if="scope.row.englishStatus==='1'" style="color: #0aef15">
+                    正确
+                  </span>
+                </template>
+              </el-table-column>
+              <el-table-column :show-overflow-tooltip="true" prop="chineseAnswer" label="英译汉内容"/>
+              <el-table-column :show-overflow-tooltip="true" prop="chineseStatus" label="英译汉结果">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.chineseStatus==='0'" style="color: red">
+                    错误
+                  </span>
+                  <span v-if="scope.row.chineseStatus==='1'" style="color: #0aef15">
+                    正确
+                  </span>
+                </template>
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" prop="updateTime" label="更新时间"/>
             </el-table>

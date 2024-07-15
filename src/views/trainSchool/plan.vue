@@ -20,7 +20,7 @@
     <!--表单渲染-->
     <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU"
                v-loading.fullscreen.lock="loading" element-loading-text="文件上传中"
-               :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="600px">
+               :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="700px">
       <el-form class="dialog-form" ref="form" :model="form" size="small" label-width="90px">
         <el-row>
           <el-col :span="24">
@@ -149,7 +149,7 @@
           </el-col>
         </el-row>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div slot="footer" class="dialog-footer" id="plan_footer" :style="buttonStyle">
         <el-button type="text" @click="crud.cancelCU">取消</el-button>
         <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
       </div>
@@ -291,6 +291,11 @@ export default {
   inject: ['reload'],
   data() {
     return {
+      buttonStyle: {
+        position: 'fixed',
+        bottom: '1em',
+        zIndex: 999,
+      },
       height: document.documentElement.clientHeight - 180 + 'px;',
       permission: {
         add: ['admin', 'training:add'],
@@ -527,6 +532,7 @@ export default {
     border: #b7b1b1 1px solid;
     padding: 10px 0 0 0;
     margin-bottom: 10px;
+    width: 510px;
 
     a {
       text-decoration: underline; /* 添加下划线 */
@@ -554,6 +560,10 @@ export default {
     font-weight: 400;
   }
 
+}
+#plan_footer{
+  margin: auto;
+  padding-left: 560px;
 }
 
 </style>
