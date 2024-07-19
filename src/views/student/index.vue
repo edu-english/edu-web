@@ -31,7 +31,7 @@
     <el-dialog append-to-body :close-on-click-modal="false" :visible.sync="addStudentDialog"
                title="学生信息" width="600px" @close="closeForm">
       <el-form ref="form" class="dialog-form" :model="initStudent" :rules="rules" size="small" label-position="left"
-               label-width="90px">
+               label-width="100px">
         <el-form-item label="学生头像" v-show="stuImg">
           <img :src="initStudent.headImg" width="100" height="100" alt="学生头像">
         </el-form-item>
@@ -63,6 +63,10 @@
           <el-input-number v-model="initStudent.englishLevel" controls-position="right" size="large" :min="1"
                            :max="10" class="form-put"/>
         </el-form-item>
+        <el-form-item label="剩余学习次数" prop="studyCount">
+          <el-input-number v-model="initStudent.studyCount" controls-position="right" size="large" :min="1"
+                           class="form-put"/>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="text" @click="closeForm">取消</el-button>
@@ -80,6 +84,7 @@
       <el-table-column :show-overflow-tooltip="true" prop="parentName" label="父母姓名"/>
       <el-table-column :show-overflow-tooltip="true" prop="phone" label="手机号"/>
       <el-table-column :show-overflow-tooltip="true" prop="englishLevel" label="英语等级"/>
+      <el-table-column :show-overflow-tooltip="true" prop="studyCount" label="剩余学习次数"/>
       <el-table-column :show-overflow-tooltip="true" prop="signTime" label="报名时间"/>
       <el-table-column :show-overflow-tooltip="true" prop="studySchedule" label="学习进度">
         <template slot-scope="scope">
@@ -189,6 +194,7 @@ export default {
         englishLevel: null,
         signTime: null,
         studySchedule: null,
+        studyCount: 0
       },
       intervalId: null,
       addStudentDialog: false,
@@ -205,7 +211,7 @@ export default {
       edit: false,
       del: true,
       download: false,
-      reset:true
+      reset: true
     }
   },
   mounted: function () {
