@@ -64,7 +64,7 @@
             </template>
           </el-table-column>
           <el-table-column :show-overflow-tooltip="true" prop="onlineStudentName" label="学生姓名"/>
-          <el-table-column :show-overflow-tooltip="true" prop="classroomDeviceName" label="设备名称">
+          <el-table-column :show-overflow-tooltip="true" prop="classroomDeviceName" label="设备序号">
             <template slot-scope="scope">
               <span style="color: #2fe90e;" v-if="scope.row.classroomDeviceStatus===1">{{
                   scope.row.classroomDeviceName
@@ -104,7 +104,7 @@
                           学生姓名：{{deviceInfo.onlineStudentName}}
                         </el-col>
                         <el-col :xs="24" :sm="24" :lg="7">
-                          设备名称：
+                          设备序号：
                           <span style="color: #2fe90e;" v-if="deviceInfo.classroomDeviceStatus===1">{{deviceInfo.classroomDeviceName }}</span>
                           <span style="color: #8A9495;" v-else>{{ deviceInfo.classroomDeviceName }}</span>
                         </el-col>

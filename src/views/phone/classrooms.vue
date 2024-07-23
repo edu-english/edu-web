@@ -15,22 +15,25 @@
           <el-button size="mini" type="primary" @click="stusLogoutDistribute()">一键下机</el-button>
         </div>
         <el-table ref="table" :data="deviceInfoList" style="width: 100%;">
-          <el-table-column :show-overflow-tooltip="true" prop="classroomName" label="学生头像">
+          <el-table-column :show-overflow-tooltip="true" prop="classroomName" label="头像" width="70">
             <template slot-scope="scope">
               <el-avatar size="small" :src="scope.row.onlineStudentImage" v-if="scope.row.classroomStudentOnline===1"></el-avatar>
               <el-avatar size="small" icon="el-icon-user-solid" v-else></el-avatar>
             </template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="onlineStudentName" label="学生姓名"/>
-          <el-table-column :show-overflow-tooltip="true" prop="classroomDeviceName" label="设备名称">
+          <el-table-column :show-overflow-tooltip="true" prop="onlineStudentName" label="姓名" width="70"/>
+          <el-table-column :show-overflow-tooltip="true" prop="classroomDeviceName" label="设备序号-类型" width="100">
             <template slot-scope="scope">
               <span style="color: #2fe90e;" v-if="scope.row.classroomDeviceStatus===1">{{scope.row.classroomDeviceName }}</span>
               <span style="color: #8A9495;" v-else>{{ scope.row.classroomDeviceName }}</span>
+              <span>
+                —{{scope.row.classroomDeviceTypeName }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column
             label="操作"
-            width="70"
+            width="65"
             align="center"
             fixed="right">
             <template slot-scope="scope">

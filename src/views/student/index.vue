@@ -64,7 +64,7 @@
                            :max="10" class="form-put"/>
         </el-form-item>
         <el-form-item label="剩余学习次数" prop="studyCount">
-          <el-input-number v-model="initStudent.studyCount" controls-position="right" size="large" :min="1"
+          <el-input-number v-model="initStudent.studyCount" controls-position="right" size="large" :min="0"
                            class="form-put"/>
         </el-form-item>
       </el-form>
