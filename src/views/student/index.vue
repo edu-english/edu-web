@@ -179,8 +179,7 @@ export default {
           {required: true, trigger: 'blur', message: '账号不能为空'}
         ],
         studentName:[
-          { required: true, message: '请输入学生姓名', trigger: 'blur' },
-          { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
+          { required: true, message: '请输入学生姓名', trigger: 'blur' }
         ],
         grade:[
           { required: true, message: '请输入学生年级', trigger: 'blur' }
