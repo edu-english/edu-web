@@ -79,6 +79,7 @@
               @selection-change="crud.selectionChangeHandler">
       <el-table-column type="selection" width="55"/>
       <el-table-column :show-overflow-tooltip="true" prop="studentName" label="姓名"/>
+      <el-table-column :show-overflow-tooltip="true" prop="account" label="学生账号"/>
       <el-table-column :show-overflow-tooltip="true" prop="grade" label="年级"/>
       <el-table-column :show-overflow-tooltip="true" prop="gradeClass" label="班级"/>
       <el-table-column :show-overflow-tooltip="true" prop="parentName" label="父母姓名"/>
@@ -173,6 +174,16 @@ export default {
       rules: {
         phone: [
           {required: true, trigger: 'blur', validator: validPhone}
+        ],
+        account:[
+          {required: true, trigger: 'blur', message: '账号不能为空'}
+        ],
+        studentName:[
+          { required: true, message: '请输入学生姓名', trigger: 'blur' },
+          { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
+        ],
+        grade:[
+          { required: true, message: '请输入学生年级', trigger: 'blur' }
         ]
       },
       eduLevelList: [
