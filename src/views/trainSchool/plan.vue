@@ -312,11 +312,11 @@ export default {
       ],
       trainTypeList: [
         {type: 'WORD', desc: '词汇记忆'},
+        {type: 'SENTENCE', desc: '句型练习'},
         {type: 'SITIATIONAL', desc: '情景对话'},
         {type: 'SHORT_TEXT', desc: '短文阅读'},
-        {type: 'AUDIO_VISUAL', desc: '视听训练'},
         {type: 'LEVEL_TEST', desc: '等级测试'},
-        {type: 'SENTENCE', desc: '句型练习'},
+        {type: 'AUDIO_VISUAL', desc: '视听训练'},
       ],
       examinationInfoList: [],
       trainContent: [],
