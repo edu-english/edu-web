@@ -169,6 +169,7 @@
           <span v-if="scope.row.trainType==='SHORT_TEXT'">短文阅读</span>
           <span v-if="scope.row.trainType==='AUDIO_VISUAL'">视听训练</span>
           <span v-if="scope.row.trainType==='LEVEL_TEST'">等级测试</span>
+          <span v-if="scope.row.trainType==='SENTENCE'">句型练习</span>
         </template>
       </el-table-column>
       <el-table-column :show-overflow-tooltip="true" prop="trainDescription" label="计划描述"/>
@@ -315,6 +316,7 @@ export default {
         {type: 'SHORT_TEXT', desc: '短文阅读'},
         {type: 'AUDIO_VISUAL', desc: '视听训练'},
         {type: 'LEVEL_TEST', desc: '等级测试'},
+        {type: 'SENTENCE', desc: '句型练习'},
       ],
       examinationInfoList: [],
       trainContent: [],
