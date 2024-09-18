@@ -7,17 +7,33 @@
     <hr>
     <div class="head-content" id="head-content">
       <h3>{{ content.examName }} </h3>
-      <p v-if="content.studentScore!==null">得分：{{ content.studentScore }}</p>
+      <div class="student-score-style" v-show="showStuAnswer">
+        <p v-if="content.studentScore!==null">得分：{{ content.studentScore }}</p>
+        <el-form ref="form" size="small" label-width="55px" :inline="true">
+          <el-form-item label="升级：">
+            <el-radio v-model="hasPass" label="1">通过</el-radio>
+            <el-radio v-model="hasPass" label="0">不通过</el-radio>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="score(null,content.batchId)">提交</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
       <ol class="question-ol">
-        <li v-for="examination in content.examination" :key="examination.examId">
+        <li v-for="(examination,exIndex) in content.examination" :key="examination.examId">
           <div style="margin-top: 20px">{{ examination.questionTitle }}</div>
           <div class="child-question" v-for="(question,index) in examination.questions">
             <div>
               <span>
                 {{ index + 1 }}、{{ question.questionTitle }}（{{ question.score }}分）
-                 <span v-if="question.questionType!=='COMPOSITION' && question.questionType!=='COMPREHENSION'">正确答案（ {{ question.answer }} ）</span>
+                 <span v-if="question.questionType!=='COMPOSITION' && question.questionType!=='COMPREHENSION'">正确答案（ {{
+                     question.answer
+                   }} ）</span>
               </span>
-              <span class="stu-answer" v-show="showStuAnswer && question.questionType!=='COMPOSITION' && question.questionType!=='COMPREHENSION'">学生答案（ {{question.studentAnswer}} ）</span>
+              <span class="stu-answer"
+                    v-show="showStuAnswer && question.questionType!=='COMPOSITION' && question.questionType!=='COMPREHENSION'">学生答案（ {{
+                  question.studentAnswer
+                }} ）</span>
             </div>
             <!--题为文件时处理-->
             <div v-if="question.questionTitleFile!==null && question.questionTitleFile!==''" class="question-file-div">
@@ -78,12 +94,7 @@
               <div class="operate-button">
                 <el-form ref="form" size="small" label-width="90px" :inline="true">
                   <el-form-item label="作文分数：">
-<!--                    <el-input v-model="stuScore"></el-input>-->
-                    <el-input-number v-model.number="stuScore" controls-position="right" size="large" :min="1" :max="question.score"/>
-                  </el-form-item>
-                  <el-form-item label="升级：">
-                    <el-radio v-model="hasPass" label="1">通过</el-radio>
-                    <el-radio v-model="hasPass" label="0">不通过</el-radio>
+                    <el-input-number v-model.number="stuScore" controls-position="right" size="large" :min="0" :max="10"/>
                   </el-form-item>
                   <el-form-item>
                     <el-button type="primary" @click="score(question.id,content.batchId)">提交</el-button>
@@ -93,16 +104,21 @@
               </div>
             </div>
             <!--阅读理解下小题-->
-            <div class="child-question" v-show="question.questionType==='COMPREHENSION'" v-for="(subQuestion,subIndex) in question.subQuestions">
+            <div class="child-question" v-show="question.questionType==='COMPREHENSION'"
+                 v-for="(subQuestion,subIndex) in question.subQuestions">
               <div>
                 <span>
                    {{ subIndex + 1 }}、{{ subQuestion.questionTitle }}（{{ subQuestion.score }}分）
                  <span v-if="question.questionType!=='COMPOSITION'">正确答案（ {{ subQuestion.answer }} ）</span>
               </span>
-                <span class="stu-answer" v-show="showStuAnswer && subQuestion.questionType!=='COMPOSITION'">学生答案（ {{subQuestion.studentAnswer}} ）</span>
+                <span class="stu-answer"
+                      v-show="showStuAnswer && subQuestion.questionType!=='COMPOSITION'">学生答案（ {{
+                    subQuestion.studentAnswer
+                  }} ）</span>
               </div>
               <!--题为文件时处理-->
-              <div v-if="subQuestion.questionTitleFile!==null && subQuestion.questionTitleFile!==''" class="question-file-div">
+              <div v-if="subQuestion.questionTitleFile!==null && subQuestion.questionTitleFile!==''"
+                   class="question-file-div">
                 <div v-if="subQuestion.fileType==='VOICE'">
                   <audio ref="audioPlayer" controls>
                     <source :src="subQuestion.questionTitleFile" type="audio/mpeg">
@@ -175,7 +191,13 @@ export default {
         batchId: null,
         examName: null,
         studentScore: null,
-        examination: [],
+        examination: [
+          {
+            order: 0,
+            questionTitle: "",
+            questions: []
+          }
+        ],
       },
       videoInfo: {
         poster: '', //视频封面uri
@@ -195,7 +217,7 @@ export default {
       showStuAnswer: false,
       examinationsId: null,
       stuId: null,
-      stuScore: null,
+      stuScore: 0,
       hasPass: '1',
       loading: false,
     }
@@ -218,15 +240,15 @@ export default {
     }
   },
   methods: {
-    backPage(){
+    backPage() {
       this.$router.go(-1)
     },
-    printerExamInfo(){
+    printerExamInfo() {
       printJS({
-        type:'html',
+        type: 'html',
         printable: 'head-content',
-        targetStyles:['*'],
-        maxWidth:'800px'
+        targetStyles: ['*'],
+        maxWidth: '800px'
       })
     },
     getExaminationsDetail(examinationId) {
@@ -262,15 +284,24 @@ export default {
       })
     },
     score(questionId, batchId) {
-      const data = {
-        "id": batchId,
-        "hasPass": this.hasPass,
-        "scoreList": [
-          {
-            "questionId": questionId,
-            "score": this.stuScore
-          }
-        ]
+      let data = null;
+      if (questionId === null) {
+        data = {
+          "id": batchId,
+          "hasPass": this.hasPass,
+          "scoreList": []
+        }
+      } else {
+        data = {
+          "id": batchId,
+          "hasPass": '0',
+          "scoreList": [
+            {
+              "questionId": questionId,
+              "score": this.stuScore
+            }
+          ]
+        }
       }
       ExaminationsDetail.markExamination(data).then(res => {
         if (res.code === '0000') {
@@ -316,11 +347,12 @@ export default {
 
 .head-content {
 
-  h3{
+  h3 {
     text-align: center;
   }
-  p {
-    margin-left: 50%;
+
+  .student-score-style {
+    margin-left: 70%;
   }
 
   ol.question-ol {
@@ -343,7 +375,7 @@ export default {
 
   .operate-button {
     margin-top: 20px;
-    margin-left: 55%;
+    margin-left: 70%;
   }
 }
 

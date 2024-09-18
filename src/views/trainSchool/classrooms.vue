@@ -64,6 +64,11 @@
             </template>
           </el-table-column>
           <el-table-column :show-overflow-tooltip="true" prop="onlineStudentName" label="学生姓名"/>
+          <el-table-column :show-overflow-tooltip="true" prop="signTime" label="报名时间"/>
+          <el-table-column :show-overflow-tooltip="true" prop="totalLessonHour" label="总次数"/>
+          <el-table-column :show-overflow-tooltip="true" prop="consumeLessonHour" label="消耗次数"/>
+          <el-table-column :show-overflow-tooltip="true" prop="remainLessonHour" label="剩余次数"/>
+          <el-table-column :show-overflow-tooltip="true" prop="studySchedule" label="学习进度"/>
           <el-table-column :show-overflow-tooltip="true" prop="classroomDeviceName" label="设备序号">
             <template slot-scope="scope">
               <span style="color: #2fe90e;" v-if="scope.row.classroomDeviceStatus===1">{{
