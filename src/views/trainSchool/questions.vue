@@ -79,7 +79,7 @@
         <el-form-item label="选项D" prop="optionD" v-show="optionShow">
           <el-input v-model="form.optionD" class="form-put"/>
         </el-form-item>
-        <el-form-item label="答案" prop="answer" v-show="form.questionType!=='COMPREHENSION'">
+        <el-form-item label="答案" prop="answer" v-show="form.questionType!=='COMPREHENSION' && form.questionType!=='CLOZE'">
           <el-input v-model="form.answer" placeholder="多选题时答案以,拼接。示例：a,c" class="form-put"/>
         </el-form-item>
         <el-form-item label="等级" prop="difficultyLevel">
@@ -156,6 +156,7 @@
             作文
           </span>
           <span v-if="scope.row.questionType==='COMPREHENSION'">阅读理解</span>
+          <span v-if="scope.row.questionType==='CLOZE'">完形填空</span>
         </template>
       </el-table-column>
       <!--      <el-table-column :show-overflow-tooltip="true" prop="score" label="分值"/>-->
@@ -179,7 +180,7 @@
             </el-col>
             <el-col :span="5">
               <el-button size="mini" type="primary" icon="el-icon-more" @click="getChildQuestionList(scope.row.id)"
-                         v-show="scope.row.questionType==='COMPREHENSION'"/>
+                         v-show="scope.row.questionType==='COMPREHENSION' || scope.row.questionType==='CLOZE'"/>
             </el-col>
           </el-row>
         </template>
@@ -442,6 +443,10 @@ export default {
         {
           type: 'COMPREHENSION',
           desc: '阅读理解'
+        },
+        {
+          type: 'CLOZE',
+          desc: '完形填空'
         },
       ],
       childQuestionsTypeList: [

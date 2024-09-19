@@ -26,12 +26,12 @@
             <div>
               <span>
                 {{ index + 1 }}、{{ question.questionTitle }}（{{ question.score }}分）
-                 <span v-if="question.questionType!=='COMPOSITION' && question.questionType!=='COMPREHENSION'">正确答案（ {{
+                 <span v-if="question.questionType!=='COMPOSITION' && question.questionType!=='COMPREHENSION' && question.questionType!=='CLOZE'">正确答案（ {{
                      question.answer
                    }} ）</span>
               </span>
               <span class="stu-answer"
-                    v-show="showStuAnswer && question.questionType!=='COMPOSITION' && question.questionType!=='COMPREHENSION'">学生答案（ {{
+                    v-show="showStuAnswer && question.questionType!=='COMPOSITION' && question.questionType!=='COMPREHENSION' && question.questionType!=='CLOZE'">学生答案（ {{
                   question.studentAnswer
                 }} ）</span>
             </div>
@@ -104,7 +104,7 @@
               </div>
             </div>
             <!--阅读理解下小题-->
-            <div class="child-question" v-show="question.questionType==='COMPREHENSION'"
+            <div class="child-question" v-show="question.questionType==='COMPREHENSION' || question.questionType==='CLOZE'"
                  v-for="(subQuestion,subIndex) in question.subQuestions">
               <div>
                 <span>

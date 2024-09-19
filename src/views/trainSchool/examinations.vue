@@ -51,6 +51,9 @@
         <el-form-item label="阅读理解数量" prop="comprehensionCount">
           <el-input-number v-model.number="form.comprehensionCount" controls-position="right" size="large" :min="0" :max="100" class="form-put"/>
         </el-form-item>
+        <el-form-item label="完形填空数量" prop="clozeCount">
+          <el-input-number v-model.number="form.clozeCount" controls-position="right" size="large" :min="0" :max="100" class="form-put"/>
+        </el-form-item>
         <el-form-item label="作文数量" prop="compositionCount">
           <el-input-number v-model.number="form.compositionCount" controls-position="right" size="large" :min="0" :max="1" class="form-put"/>
         </el-form-item>
@@ -76,6 +79,7 @@
       <el-table-column :show-overflow-tooltip="true" prop="completionCount" label="填空题数量"/>
       <el-table-column :show-overflow-tooltip="true" prop="judgeCount" label="判断题数量"/>
       <el-table-column :show-overflow-tooltip="true" prop="comprehensionCount" label="阅读理解数量"/>
+      <el-table-column :show-overflow-tooltip="true" prop="clozeCount" label="完形填空数量"/>
       <el-table-column :show-overflow-tooltip="true" prop="compositionCount" label="作文数量"/>
       <el-table-column :show-overflow-tooltip="true" prop="difficultyLevel" label="等级"/>
       <el-table-column :show-overflow-tooltip="true" prop="createTime" label="创建日期"/>
@@ -130,6 +134,7 @@ const defaultForm = {
   judgeCount: null,
   compositionCount: null,
   comprehensionCount: null,
+  clozeCount: null,
 }
 export default {
   name: 'examinations',
