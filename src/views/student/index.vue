@@ -61,7 +61,7 @@
         </el-form-item>
         <el-form-item label="英语等级" prop="englishLevel">
           <el-input-number v-model="initStudent.englishLevel" controls-position="right" size="large" :min="1"
-                           :max="10" class="form-put"/>
+                            class="form-put"/>
         </el-form-item>
         <el-form-item label="剩余学习次数" prop="studyCount">
           <el-input-number v-model="initStudent.studyCount" controls-position="right" size="large" :min="0"
